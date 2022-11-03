@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:attendance_system_flutter_desktop/models/subject_model.dart';
 import 'package:attendance_system_flutter_desktop/view_model/auth_view_model.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -5,9 +7,9 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
 
-class SubjectsViewModel {
+class SubjectsViewModel with ChangeNotifier{
   Future<void> addSubject(BuildContext context) async {
-    showDialog(
+    await showDialog(
       context: context,
       builder: (context) {
         TextEditingController controller = TextEditingController();
@@ -34,7 +36,11 @@ class SubjectsViewModel {
                 }
                 String instructorId = Provider.of<AuthViewModel>(context,listen: false).user!.instructorId!;
                 try{
-                  await SubjectModel().addSubject(controller.text, instructorId).then((_) => Navigator.pop(context));
+                  await SubjectModel().addSubject(controller.text, instructorId).then((_) async{
+                    Navigator.pop(context);
+                    await Provider.of<SubjectsViewModel>(context,listen: false).getSubjectsByInstructorId(context);
+
+                  });
                 }catch(e){
                   showSnackbar(context, Snackbar(content: Text(e.toString())));
                 }
@@ -46,9 +52,22 @@ class SubjectsViewModel {
     );
   }
 
-  Future<http.Response> getSubjectsByInstructorId(BuildContext context)async{
+
+  Map<String,dynamic> subjects = {};
+  bool isLoading = true;
+
+  Future<void> getSubjectsByInstructorId(BuildContext context)async{
+    isLoading = true;
+    notifyListeners();
     String instructorId = Provider.of<AuthViewModel>(context,listen: false).user!.instructorId!;
-    return await SubjectModel().getSubjectsByInstructorId(instructorId);
+    http.Response res = await SubjectModel().getSubjectsByInstructorId(instructorId);
+    subjects = jsonDecode(res.body) as Map<String, dynamic>;
+    isLoading = false;
+    notifyListeners();
   }
+
+
+
+
 
 }

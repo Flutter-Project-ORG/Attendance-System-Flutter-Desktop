@@ -1,5 +1,5 @@
 import 'package:attendance_system_flutter_desktop/models/instructor_model.dart';
-import 'package:attendance_system_flutter_desktop/views/home/home_view.dart';
+import 'package:attendance_system_flutter_desktop/views/home_view.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
 class AuthViewModel with ChangeNotifier {

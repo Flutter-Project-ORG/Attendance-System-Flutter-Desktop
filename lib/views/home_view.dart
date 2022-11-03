@@ -2,7 +2,7 @@ import 'package:attendance_system_flutter_desktop/views/auth_view.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import '../../view_model/home/home_view_model.dart';
+import '../view_model/home_view_model.dart';
 import 'dashboard_view.dart';
 import 'subjects_view.dart';
 
@@ -34,7 +34,7 @@ class HomeView extends StatelessWidget {
               PaneItem(
                 icon: const FaIcon(FontAwesomeIcons.tableList),
                 title: const Text('Subjects'),
-                body:  SubjectsView(),
+                body: const SubjectsView(),
               ),
               PaneItem(
                 onTap: () {

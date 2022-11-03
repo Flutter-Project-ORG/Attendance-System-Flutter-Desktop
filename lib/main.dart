@@ -1,11 +1,12 @@
+import 'package:attendance_system_flutter_desktop/view_model/subjects_view_model.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 
 import 'res/colors.dart';
 import 'view_model/auth_view_model.dart';
-import 'view_model/home/home_view_model.dart';
+import 'view_model/home_view_model.dart';
 import 'views/auth_view.dart';
-import 'views/home/home_view.dart';
+import 'views/home_view.dart';
 
 void main() {
   runApp(
@@ -16,6 +17,9 @@ void main() {
         ),
         ChangeNotifierProvider(
           create: (_) => AuthViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => SubjectsViewModel(),
         ),
       ],
       child: const MyApp(),
