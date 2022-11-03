@@ -1,10 +1,18 @@
-import 'package:flutter/material.dart';
+import 'package:attendance_system_flutter_desktop/view_model/home_view_model.dart';
+import 'package:attendance_system_flutter_desktop/views/auth_view.dart';
+import 'package:fluent_ui/fluent_ui.dart';
+import 'package:provider/provider.dart';
 
 import 'res/colors.dart';
 import 'views/home_view.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => HomeViewModel(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -12,24 +20,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return FluentApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
+      // themeMode: ThemeMode.dark,
       theme: ThemeData(
-        canvasColor: CustomColors.lightBgColor,
-        colorScheme: ColorScheme.fromSwatch().copyWith(
-          primary: CustomColors.lightPrimaryColor,
-          secondary: CustomColors.lightSecondaryColor,
-        ),
+        brightness: Brightness.light,
       ),
       darkTheme: ThemeData(
-        canvasColor: CustomColors.darkBgColor,
-        colorScheme: ColorScheme.fromSwatch().copyWith(
-          primary: CustomColors.darkPrimaryColor,
-          secondary: CustomColors.darkSecondaryColor,
-        ),
+        brightness: Brightness.dark,
       ),
-      home: const HomeView(),
+      initialRoute:  AuthView.routeName,
+      routes: {
+        AuthView.routeName:(_) => const AuthView(),
+        HomeView.routeName:(_) => const HomeView(),
+      },
     );
   }
 }
