@@ -109,10 +109,10 @@ class AuthView extends StatelessWidget {
                               Center(
                                 child: FilledButton(
                                 child: Text(provider.authType == AuthType.login ? 'LOGIN' : 'SIGNUP'),
-                                onPressed: () {
+                                onPressed: () async{
                                   if(_formKey.currentState!.validate()){
                                     _formKey.currentState!.save();
-                                    provider.authenticate(userInfo,context);
+                                   await provider.authenticate(userInfo,context);
                                   }
                                 },
                               ),

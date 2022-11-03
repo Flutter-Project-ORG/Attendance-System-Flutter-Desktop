@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:attendance_system_flutter_desktop/view_model/subjects_view_model.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class SubjectsView extends StatelessWidget {
    SubjectsView({Key? key}) : super(key: key);
@@ -13,8 +16,17 @@ class SubjectsView extends StatelessWidget {
       header: const Text(
         "Subjects",
       ),
-      content: FutureBuilder(
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
+      content: FutureBuilder<http.Response>(
+        future: _viewModel.getSubjectsByInstructorId(context),
+        builder: (BuildContext context, AsyncSnapshot<http.Response> snapshot) {
+          if(snapshot.connectionState == ConnectionState.waiting){
+            return const Center(child: ProgressRing());
+          }
+          if(snapshot.hasData){
+            final jsonData = jsonDecode(snapshot.data!.body) as Map<String, dynamic>;
+            print(jsonData);
+            return Container();
+          }
           return Container();
         },
       ),
