@@ -6,6 +6,8 @@ import 'package:flutter/material.dart' as material;
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
+import 'lectures_view.dart';
+
 class SubjectsView extends StatefulWidget {
   const SubjectsView({Key? key}) : super(key: key);
 
@@ -52,7 +54,14 @@ class _SubjectsViewState extends State<SubjectsView> {
               ),
               itemBuilder: (BuildContext context, int index) {
                 Map<String, dynamic> singleSubject = provider.subjects[keyList[index]];
-                return Card(child: Text(singleSubject['subjectName']));
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, LecturesView.routeName,arguments: singleSubject['subjectName']);
+                  },
+                  child: Card(
+                    child: Text(singleSubject['subjectName']),
+                  ),
+                );
               },
             ),
           );
@@ -66,7 +75,6 @@ class _SubjectsViewState extends State<SubjectsView> {
             child: material.FloatingActionButton.extended(
               onPressed: () async {
                 await _viewModel.addSubject(context);
-                // await Provider.of<SubjectsViewModel>(context,listen: false).getSubjectsByInstructorId(context);
               },
               icon: const Icon(FluentIcons.add),
               label: const Text('Add Subject'),
