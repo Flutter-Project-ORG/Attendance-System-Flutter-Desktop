@@ -1,15 +1,23 @@
-import 'package:attendance_system_flutter_desktop/view_model/home_view_model.dart';
-import 'package:attendance_system_flutter_desktop/views/auth_view.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 
 import 'res/colors.dart';
-import 'views/home_view.dart';
+import 'view_model/auth_view_model.dart';
+import 'view_model/home/home_view_model.dart';
+import 'views/auth_view.dart';
+import 'views/home/home_view.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => HomeViewModel(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => HomeViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => AuthViewModel(),
+        ),
+      ],
       child: const MyApp(),
     ),
   );
@@ -30,10 +38,11 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         brightness: Brightness.dark,
       ),
-      initialRoute:  AuthView.routeName,
+      // initialRoute: AuthView.routeName,
+      initialRoute: HomeView.routeName,
       routes: {
-        AuthView.routeName:(_) => const AuthView(),
-        HomeView.routeName:(_) => const HomeView(),
+        AuthView.routeName: (_) => AuthView(),
+        HomeView.routeName: (_) => const HomeView(),
       },
     );
   }

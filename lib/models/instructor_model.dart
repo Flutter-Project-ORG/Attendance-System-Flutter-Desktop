@@ -5,13 +5,13 @@ import '../res/contants.dart';
 import 'package:http/http.dart' as http;
 
 class InstructorModel {
-  String? userId;
+  String? instructorId;
   String? username;
   String? email;
   String? imageUrl;
 
   InstructorModel({
-    this.userId,
+    this.instructorId,
     this.username,
     this.email,
     this.imageUrl,
@@ -19,7 +19,7 @@ class InstructorModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'userId': userId,
+      'userId': instructorId,
       'username': username,
       'email': email,
       'imageUrl': imageUrl,
@@ -28,7 +28,7 @@ class InstructorModel {
 
   factory InstructorModel.fromJson(Map<String, dynamic> json) {
     return InstructorModel(
-      userId: json['userId'] as String,
+      instructorId: json['userId'] as String,
       username: json['username'] as String,
       email: json['email'] as String,
       imageUrl: json['imageUrl'] as String,
@@ -37,7 +37,7 @@ class InstructorModel {
 
   @override
   String toString() {
-    return 'InstructorModel{userId: $userId, username: $username, email: $email, imageUrl: $imageUrl}';
+    return 'InstructorModel{userId: $instructorId, username: $username, email: $email, imageUrl: $imageUrl}';
   }
 
   Future<InstructorModel> authenticate(
@@ -51,7 +51,7 @@ class InstructorModel {
       );
       final authResData = jsonDecode(authRes.body);
       if (authResData['error'] != null) {
-        throw authResData['error'];
+        throw authResData['error']['message'];
       }
 
       String userId = authResData['localId'];
@@ -72,7 +72,7 @@ class InstructorModel {
         throw "Something went wrong!";
       }
       return InstructorModel(
-        userId: userId,
+        instructorId: userId,
         username: dbResData['username'],
         email: dbResData['email'],
         imageUrl: dbResData['imageUrl'],

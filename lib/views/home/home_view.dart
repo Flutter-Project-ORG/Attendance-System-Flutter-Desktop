@@ -2,8 +2,9 @@ import 'package:attendance_system_flutter_desktop/views/auth_view.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import '../models/instructor_model.dart';
-import '../view_model/home_view_model.dart';
+import '../../view_model/home/home_view_model.dart';
+import 'dashboard_view.dart';
+import 'subjects_view.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -26,31 +27,17 @@ class HomeView extends StatelessWidget {
             displayMode: PaneDisplayMode.auto,
             items: [
               PaneItem(
-                icon: const FaIcon(FontAwesomeIcons.chartLine),
+                icon: const Icon(FluentIcons.view_dashboard),
                 title: const Text('Dashboard'),
-                body: const ScaffoldPage(
-                  header: Text(
-                    "Dashboard",
-                  ),
-                  content: Center(
-                    child: Text("Welcome to Page 1!"),
-                  ),
-                ),
+                body: const DashboardView(),
               ),
               PaneItem(
                 icon: const FaIcon(FontAwesomeIcons.tableList),
                 title: const Text('Subjects'),
-                body: const ScaffoldPage(
-                  header: Text(
-                    "Subjects",
-                  ),
-                  content: Center(
-                    child: Text("Welcome to Page 2!"),
-                  ),
-                ),
+                body:  SubjectsView(),
               ),
               PaneItem(
-                onTap: (){
+                onTap: () {
                   provider.setPageIndex = 0;
                   Navigator.pushReplacementNamed(context, AuthView.routeName);
                 },
