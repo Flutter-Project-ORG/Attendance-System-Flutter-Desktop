@@ -5,6 +5,9 @@ import '../res/contants.dart';
 import 'package:http/http.dart' as http;
 
 class InstructorModel {
+
+
+
   String? instructorId;
   String? username;
   String? email;
@@ -44,7 +47,7 @@ class InstructorModel {
       {required String email, required String password, String? username, bool isLogin = false}) async {
     try {
       Uri authUrl = Uri.parse(
-          "https://identitytoolkit.googleapis.com/v1/accounts:${isLogin ? 'signInWithPassword' : 'signUp'}?key=${Constants.apiKey}");
+          "${Constants.authBaseUrl}${isLogin ? 'signInWithPassword' : 'signUp'}?key=${Constants.apiKey}");
       http.Response authRes = await http.post(
         authUrl,
         body: jsonEncode({'email': email, 'password': password, 'returnSecureToken': true}),
@@ -77,6 +80,23 @@ class InstructorModel {
         email: dbResData['email'],
         imageUrl: dbResData['imageUrl'],
       );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> restPassword(String email) async {
+    try {
+      Uri url = Uri.parse(
+          Constants.resetPassUrl);
+      http.Response authRes = await http.post(
+        url,
+        body: jsonEncode({'email': email, 'requestType': 'PASSWORD_RESET'}),
+      );
+      final authResData = jsonDecode(authRes.body);
+      if (authResData['error'] != null) {
+        throw authResData['error']['message'];
+      }
     } catch (e) {
       rethrow;
     }

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import '../res/contants.dart';
 import 'package:http/http.dart' as http;
+
 class SubjectModel {
   String? subjectId;
   String? subjectName;
@@ -34,26 +35,33 @@ class SubjectModel {
     return 'SubjectModel{subjectId: $subjectId, subjectName: $subjectName, instructorId: $instructorId}';
   }
 
-  Future<void> addSubject(String subjectName,String instructorId)async{
-    try{
-      Uri url = Uri.parse('${Constants.realtimeUrl}/subjects.json');
+  Future<void> addSubject(String subjectName, String instructorId) async {
+    try {
+      Uri url = Uri.parse('${Constants.realtimeUrl}/subjects/$instructorId.json');
       http.Response res = await http.post(
         url,
-        body: jsonEncode({ "subjectName": subjectName, "instructorId": instructorId}),
+        body: jsonEncode({"subjectName": subjectName}),
       );
       final resData = jsonDecode(res.body);
       if (resData['error'] != null) {
         throw "Something went wrong!";
       }
-    }catch(e){
+    } catch (e) {
       rethrow;
     }
   }
 
-  Future<http.Response> getSubjectsByInstructorId(String instructorId)async{
-    Uri url = Uri.parse('${Constants.realtimeUrl}/subjects.json?orderBy="instructorId"&equalTo="$instructorId"');
-    return await http.get(url);
+  Future<void> deleteSubject(String subjectId, String instructorId) async {
+    try {
+      Uri url = Uri.parse('${Constants.realtimeUrl}/subjects/$instructorId/$subjectId.json');
+      await http.delete(url);
+    } catch (e) {
+      rethrow;
+    }
   }
 
-
+  Future<http.Response> getSubjectsByInstructorId(String instructorId) async {
+    Uri url = Uri.parse('${Constants.realtimeUrl}/subjects/$instructorId.json');
+    return await http.get(url);
+  }
 }
