@@ -7,17 +7,102 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
 class SubjectsViewModel with ChangeNotifier {
+  SubjectModel subjectModel = SubjectModel.instance;
+
   Future<void> addSubject(BuildContext context) async {
+    DateTime? startTime;
+    DateTime? endTime;
+    List weekDays = [
+      {
+        'name': 'saturday',
+        'isChecked': false,
+      },
+      {
+        'name': 'sunday',
+        'isChecked': false,
+      },
+      {
+        'name': 'monday',
+        'isChecked': false,
+      },
+      {
+        'name': 'tuesday',
+        'isChecked': false,
+      },
+      {
+        'name': 'wednesday',
+        'isChecked': false,
+      },
+      {
+        'name': 'thursday',
+        'isChecked': false,
+      },
+      {
+        'name': 'friday',
+        'isChecked': false,
+      },
+    ];
     await showDialog(
       context: context,
       builder: (context) {
         TextEditingController controller = TextEditingController();
         return ContentDialog(
           title: const Text('Add New Subject'),
-          content: TextBox(
-            controller: controller,
-            header: 'Enter subject name',
-            placeholder: 'Subject name',
+          content: SingleChildScrollView(
+            child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextBox(
+                      controller: controller,
+                      header: 'Enter subject name',
+                      placeholder: 'Subject name',
+                    ),
+                    const SizedBox(
+                      height: 16.0,
+                    ),
+                    const Text('Choose days:'),
+                    Wrap(
+                      direction: Axis.horizontal,
+                      children: weekDays.map((day) {
+                        return Row(
+                          children: [
+                            Checkbox(
+                              checked: day['isChecked'],
+                              onChanged: (bool? value) {
+                                day['isChecked'] = value;
+                                setState(() {});
+                              },
+                            ),
+                            Text(day['name']),
+                          ],
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(
+                      height: 16.0,
+                    ),
+                    const Text('Choose times:'),
+                    const SizedBox(width: 8.0,),
+                    TimePicker(
+                      selected: startTime,
+                      onChanged: (DateTime time) {
+                        setState(() => startTime = time);
+                      },
+                      header: 'Start time',
+                    ),
+                    TimePicker(
+                      selected: endTime,
+                      onChanged: (DateTime time) {
+                        setState(() => endTime = time);
+                      },
+                      header: 'End time',
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
           actions: [
             Button(
@@ -33,9 +118,27 @@ class SubjectsViewModel with ChangeNotifier {
                   showSnackbar(context, const Snackbar(content: Text('You must insert a name')));
                   return;
                 }
-                String instructorId = Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;
+                List selectedDays = weekDays.where((day) {
+                  return day['isChecked'] == true;
+                }).toList().map((e) => e['name']).toList();
+                if(selectedDays.isEmpty){
+                  showSnackbar(context, const Snackbar(content: Text('You must choose a day')));
+                  return;
+                }
+                if(startTime == null){
+                  showSnackbar(context, const Snackbar(content: Text('You must choose a start day')));
+                  return;
+                }
+                if(endTime == null){
+                  showSnackbar(context, const Snackbar(content: Text('You must choose a end day')));
+                  return;
+                }
+                String instructorId = Provider
+                    .of<AuthViewModel>(context, listen: false)
+                    .user!
+                    .instructorId!;
                 try {
-                  await SubjectModel().addSubject(controller.text, instructorId).then((_) async {
+                  await subjectModel.addSubject(controller.text, instructorId,selectedDays,startTime!.toIso8601String(),endTime!.toIso8601String()).then((_) async {
                     Navigator.pop(context);
                     await Provider.of<SubjectsViewModel>(context, listen: false).getSubjectsByInstructorId(context);
                   });
@@ -75,9 +178,12 @@ class SubjectsViewModel with ChangeNotifier {
             FilledButton(
               child: const Text('Yes'),
               onPressed: () async {
-                String instructorId = Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;
+                String instructorId = Provider
+                    .of<AuthViewModel>(context, listen: false)
+                    .user!
+                    .instructorId!;
                 try {
-                  await SubjectModel().deleteSubject(subjectId, instructorId).then((_) async {
+                  await subjectModel.deleteSubject(subjectId, instructorId).then((_) async {
                     Navigator.pop(context);
                     await Provider.of<SubjectsViewModel>(context, listen: false).getSubjectsByInstructorId(context);
                   });
@@ -98,8 +204,11 @@ class SubjectsViewModel with ChangeNotifier {
   Future<void> getSubjectsByInstructorId(BuildContext context) async {
     isLoading = true;
     notifyListeners();
-    String instructorId = Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;
-    http.Response res = await SubjectModel().getSubjectsByInstructorId(instructorId);
+    String instructorId = Provider
+        .of<AuthViewModel>(context, listen: false)
+        .user!
+        .instructorId!;
+    http.Response res = await subjectModel.getSubjectsByInstructorId(instructorId);
     subjects = jsonDecode(res.body) ?? <String, dynamic>{};
     isLoading = false;
     notifyListeners();

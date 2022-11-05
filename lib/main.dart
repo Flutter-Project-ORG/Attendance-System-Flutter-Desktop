@@ -47,8 +47,8 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         brightness: Brightness.dark,
       ),
-      initialRoute: AuthView.routeName,
-      // initialRoute: HomeView.routeName,
+      // initialRoute: AuthView.routeName,
+      initialRoute: HomeView.routeName,
       routes: {
         AuthView.routeName: (_) => AuthView(),
         HomeView.routeName: (_) => const HomeView(),

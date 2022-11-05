@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../view_model/auth_view_model.dart';
 import 'home_view.dart';
 
-
 class AuthView extends StatelessWidget {
   AuthView({Key? key}) : super(key: key);
   static const String routeName = '/auth';
@@ -15,6 +14,7 @@ class AuthView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     return NavigationView(
       content: ScaffoldPage(
         header: const Center(
@@ -24,12 +24,13 @@ class AuthView extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Row(
             children: [
-              Expanded(
-                flex: 1,
-                child: Center(
-                  child: Image.asset('assets/images/logo.png'),
+              if (width > 600)
+                Expanded(
+                  flex: 1,
+                  child: Center(
+                    child: Image.asset('assets/images/logo.png'),
+                  ),
                 ),
-              ),
               Expanded(
                 flex: 3,
                 child: Consumer<AuthViewModel>(
@@ -69,7 +70,7 @@ class AuthView extends StatelessWidget {
                                       return 'Email cannot be empty';
                                     }
                                     RegExp emailValid =
-                                        RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+                                    RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
                                     if (!emailValid.hasMatch(value)) {
                                       return 'Email not valid';
                                     }
@@ -109,28 +110,29 @@ class AuthView extends StatelessWidget {
                                 ),
                                 Center(
                                   child: FilledButton(
-                                  child: Text(provider.authType == AuthType.login ? 'LOGIN' : 'SIGNUP'),
-                                  onPressed: () async{
-                                    if(_formKey.currentState!.validate()){
-                                      _formKey.currentState!.save();
-                                     await provider.authenticate(userInfo,context);
-                                    }
-                                  },
-                                ),
+                                    child: Text(provider.authType == AuthType.login ? 'LOGIN' : 'SIGNUP'),
+                                    onPressed: () async {
+                                      if (_formKey.currentState!.validate()) {
+                                        _formKey.currentState!.save();
+                                        await provider.authenticate(userInfo, context);
+                                      }
+                                    },
+                                  ),
                                 ),
                                 const SizedBox(
                                   height: 16.0,
                                 ),
                                 Row(
                                   children: [
-                                    Text(provider.authType == AuthType.login ? 'Don\'t have an account? ' : 'Already have an account? '),
+                                    Text(provider.authType == AuthType.login
+                                        ? 'Don\'t have an account? '
+                                        : 'Already have an account? '),
                                     TextButton(
                                       onPressed: provider.changeAuthType,
                                       child: Text(provider.authType == AuthType.login ? 'Sign Up' : 'Login'),
                                     ),
                                   ],
                                 ),
-
                               ],
                             ),
                           ),

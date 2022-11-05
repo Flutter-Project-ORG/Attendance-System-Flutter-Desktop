@@ -6,7 +6,8 @@ import 'package:http/http.dart' as http;
 
 class InstructorModel {
 
-
+  InstructorModel._();
+  static final instance = InstructorModel._();
 
   String? instructorId;
   String? username;
@@ -19,6 +20,7 @@ class InstructorModel {
     this.email,
     this.imageUrl,
   });
+
 
   Map<String, dynamic> toJson() {
     return {
@@ -46,8 +48,8 @@ class InstructorModel {
   Future<InstructorModel> authenticate(
       {required String email, required String password, String? username, bool isLogin = false}) async {
     try {
-      Uri authUrl = Uri.parse(
-          "${Constants.authBaseUrl}${isLogin ? 'signInWithPassword' : 'signUp'}?key=${Constants.apiKey}");
+      Uri authUrl =
+          Uri.parse("${Constants.authBaseUrl}${isLogin ? 'signInWithPassword' : 'signUp'}?key=${Constants.apiKey}");
       http.Response authRes = await http.post(
         authUrl,
         body: jsonEncode({'email': email, 'password': password, 'returnSecureToken': true}),
@@ -60,11 +62,11 @@ class InstructorModel {
       String userId = authResData['localId'];
       Uri dbUrl = Uri.parse("${Constants.realtimeUrl}/instructors/$userId.json");
       http.Response dbRes;
-      if(isLogin){
+      if (isLogin) {
         dbRes = await http.get(
           dbUrl,
         );
-      }else{
+      } else {
         dbRes = await http.put(
           dbUrl,
           body: jsonEncode({"username": username, "email": email, "imageUrl": null}),
@@ -87,8 +89,7 @@ class InstructorModel {
 
   Future<void> restPassword(String email) async {
     try {
-      Uri url = Uri.parse(
-          Constants.resetPassUrl);
+      Uri url = Uri.parse(Constants.resetPassUrl);
       http.Response authRes = await http.post(
         url,
         body: jsonEncode({'email': email, 'requestType': 'PASSWORD_RESET'}),

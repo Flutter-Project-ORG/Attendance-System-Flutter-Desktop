@@ -4,7 +4,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 
 class AuthViewModel with ChangeNotifier {
   AuthType authType = AuthType.login;
-
+  InstructorModel instructorModel = InstructorModel.instance;
   void changeAuthType() {
     authType = authType == AuthType.login ? AuthType.signUp : AuthType.login;
     notifyListeners();
@@ -16,10 +16,10 @@ class AuthViewModel with ChangeNotifier {
     try {
       if (authType == AuthType.login) {
 
-        user = await InstructorModel().authenticate(
+        user = await instructorModel.authenticate(
             email: userInfo['email']!, password: userInfo['password']!, isLogin: true);
       } else {
-        user = await InstructorModel().authenticate(
+        user = await instructorModel.authenticate(
             email: userInfo['email']!, password: userInfo['password']!, username: userInfo['username']!);
       }
       notifyListeners();
@@ -78,7 +78,7 @@ class AuthViewModel with ChangeNotifier {
                   return;
                 }
                 try {
-                  await InstructorModel().restPassword(controller.text).then((_) {
+                  await instructorModel .restPassword(controller.text).then((_) {
                     Navigator.pop(context);
                     showSnackbar(context, const Snackbar(content: Text('Check your email')),);
                   });
