@@ -39,26 +39,20 @@ class SubjectModel {
     return 'SubjectModel{subjectId: $subjectId, subjectName: $subjectName, instructorId: $instructorId}';
   }
 
-  Future<void> addSubject(String subjectName, String instructorId, List days, String startTime, String endTime) async {
+  Future<String> addSubject( String instructorId,Map<String,dynamic> subjectInfo) async {
     try {
       Uri url = Uri.parse('${Constants.realtimeUrl}/subjects/$instructorId.json');
       http.Response res = await http.post(
         url,
-        body: jsonEncode({
-          "subjectName": subjectName,
-          "times":{
-            "time1":{
-              'days':days,
-              'start':startTime,
-              'end':endTime,
-            }
-          },
-        }),
+        body: jsonEncode(subjectInfo),
       );
       final resData = jsonDecode(res.body);
+
       if (resData['error'] != null) {
         throw "Something went wrong!";
       }
+      final String subId = resData['name'];
+      return subId;
     } catch (e) {
       rethrow;
     }
