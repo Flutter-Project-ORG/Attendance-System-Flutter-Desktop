@@ -319,8 +319,10 @@ class SubjectsViewModel with ChangeNotifier {
                 String instructorId = Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;
                 try {
                   await subjectModel.deleteSubject(subjectId, instructorId).then((_) async {
-                    Navigator.pop(context);
-                    await Provider.of<SubjectsViewModel>(context, listen: false).getSubjectsByInstructorId(context);
+                    await lectureModel.deleteLecturesBySubject(subjectId, instructorId).then((_) async{
+                      Navigator.pop(context);
+                      await Provider.of<SubjectsViewModel>(context, listen: false).getSubjectsByInstructorId(context);
+                    });
                   });
                 } catch (e) {
                   showSnackbar(context, const Snackbar(content: Text('Something went wrong. Try again.')));

@@ -71,4 +71,16 @@ class SubjectModel {
     Uri url = Uri.parse('${Constants.realtimeUrl}/subjects/$instructorId.json');
     return await http.get(url);
   }
+
+  Future getLiveSubject(String instructorId) async {
+    try {
+      Uri url = Uri.parse('${Constants.realtimeUrl}/subjects/$instructorId.json');
+      http.Response res = await http.get(url);
+      final jsonData = jsonDecode(res.body) as Map<String,dynamic>?;
+      return jsonData;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
 }

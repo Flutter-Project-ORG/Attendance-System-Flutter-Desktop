@@ -47,4 +47,14 @@ class LectureModel {
       rethrow;
     }
   }
+
+  Future<void> deleteLecturesBySubject(String subjectId, String instructorId) async {
+    try {
+      Uri url = Uri.parse('${Constants.realtimeUrl}/lectures/$instructorId/$subjectId.json');
+      await http.delete(url);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
 }
