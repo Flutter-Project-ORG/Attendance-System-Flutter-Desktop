@@ -19,8 +19,12 @@ dependencies:
   http: ^0.13.5
   font_awesome_flutter: ^10.2.1
   fluent_ui: ^4.0.3
-  window_manager: ^0.2.7
   intl: ^0.17.0
+
+
+  window_manager: ^0.2.7
+
+
 
 
 dev_dependencies:

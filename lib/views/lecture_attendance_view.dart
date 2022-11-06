@@ -14,8 +14,13 @@ class LectureAttendanceView extends StatelessWidget {
     final attendaceProvider =
         Provider.of<LecturesAttendanceViewModel>(context, listen: false);
     return NavigationView(
-      appBar: NavigationAppBar(title: Text(lectureData['Lecture name'])),
+      appBar: NavigationAppBar(title: Text(lectureData['lecId']!)),
       content: FutureBuilder(
+        future: attendaceProvider.getAttendanceByLectureIdAndSubjectId(
+          lectureData['subId']!,
+          lectureData['lecId']!,
+          context,
+        ),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: ProgressRing());
@@ -24,7 +29,7 @@ class LectureAttendanceView extends StatelessWidget {
             return Expanded(
               child: Center(
                 child: Text(
-                  "There's no attendance for ${lectureData['Lecture name']} lecture.",
+                  "There's no attendance for ${lectureData['lecId']!} lecture.",
                 ),
               ),
             );
@@ -36,7 +41,7 @@ class LectureAttendanceView extends StatelessWidget {
                 header: 'Search for a student:',
                 placeholder: 'Name or Student id',
                 expands: false,
-                onChanged: (value){
+                onChanged: (value) {
                   attendaceProvider.filterBySearch(value);
                 },
               ),

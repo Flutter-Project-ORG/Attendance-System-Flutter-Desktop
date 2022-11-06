@@ -1,12 +1,15 @@
+import 'dart:math';
+
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:http/http.dart' as http;
 import '../models/lecture_model.dart';
 import 'dart:convert';
-
+import './auth_view_model.dart';
+import 'package:provider/provider.dart';
 class LecturesViewModel with ChangeNotifier {
-  Map<String, dynamic> _lectures = {};
+  List<dynamic> _lectures = [];
 
-  Map<String, dynamic> get lectures => _lectures;
+  List<dynamic> get lectures => _lectures;
   bool _isLoading = false;
 
   bool _isLecturesFetched = false;
@@ -20,13 +23,14 @@ class LecturesViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future getLecturesBySubjectId(String subId) async {
+  Future getLecturesBySubjectId(String subId,BuildContext ctx) async {
+    final uid = Provider.of<AuthViewModel>(ctx,listen: false).user!.instructorId;
     if(_isLecturesFetched){
       return;
     }
     try {
-      final response = await LectureModel.getLecturesBySubjectId(subId);
-      _lectures = json.decode(response.body) as Map<String, dynamic>;
+      final response = await LectureModel.getLecturesBySubjectId(subId,uid!);
+      _lectures = json.decode(response.body) as List<dynamic>;
     } catch (err) {
       throw err;
     }
