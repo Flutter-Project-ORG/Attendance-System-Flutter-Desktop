@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
-
 import 'view_model/dashboard_view_model.dart';
 import 'view_model/lectures_view_model.dart';
 import 'view_model/subjects_view_model.dart';
@@ -21,8 +20,6 @@ import './views/splash.dart';
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
-
-
   SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual, overlays: [SystemUiOverlay.bottom, SystemUiOverlay.top]);
   //WindowManager _windowManager = WindowManager.instance;
@@ -33,10 +30,8 @@ Future main() async {
     await windowManager.setMinimumSize(Size(540.0, size.height * 0.90));
     await windowManager.setMaximumSize(Size(size.width, size.height * 0.95),);
     windowManager.show();
-  }); 
+  });
 
-
-void main() {
   runApp(
     MultiProvider(
       providers: [
@@ -62,9 +57,12 @@ void main() {
       child: const MyApp(),
     ),
   );
+
+
 }
 
 class MyApp extends StatelessWidget {
+
   const MyApp({super.key});
 
   @override

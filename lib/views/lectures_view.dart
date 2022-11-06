@@ -21,7 +21,7 @@ class _LecturesViewState extends State<LecturesView> {
         Provider.of<LecturesViewModel>(context, listen: false);
     return NavigationView(
       appBar: NavigationAppBar(
-        title: Text(subject['sub']['subjectName']!),
+        title: Text(subject['subName']!),
       ),
       content: FutureBuilder(
         future: lectureProvider.getLecturesBySubjectId(
