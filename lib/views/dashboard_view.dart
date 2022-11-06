@@ -10,28 +10,13 @@ class DashboardView extends StatefulWidget {
 }
 
 class _DashboardViewState extends State<DashboardView> {
-<<<<<<< HEAD
-
-  @override
-  void initState() {
-    print('initState');
-    super.initState();
-  }
-
-
-=======
   late Future _getLiveLecture;
+
   @override
   void initState() {
-    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-    //   _getLiveLecture = await Provider.of<DashboardViewModel>(context, listen: false)
-    //       .getLiveSubject(context);
-    // });
-    _getLiveLecture = Provider.of<DashboardViewModel>(context, listen: false)
-          .getLiveSubject(context);
+    _getLiveLecture = Provider.of<DashboardViewModel>(context, listen: false).getLiveSubject(context);
     super.initState();
   }
->>>>>>> 33e533c281ef2f84e79763b768297c7d1f4a7c0a
 
   @override
   Widget build(BuildContext context) {
@@ -70,23 +55,37 @@ class _DashboardViewState extends State<DashboardView> {
               children: [
                 Expanded(
                   flex: 2,
-                  child: FutureBuilder(
-                    future: _getLiveLecture,
-                    builder: (context, snapshot) {
-                      if (dashProvider.isLoadingLiveLecture) {
+                  child: Card(
+                    child: FutureBuilder(
+                      future: _getLiveLecture,
+                      builder: (context, snapshot) {
+                        if (dashProvider.isLoadingLiveLecture) {
+                          return const Center(
+                            child: ProgressRing(),
+                          );
+                        }
+                        if (dashProvider.lectureInfo.isNotEmpty) {
+                          return Column(
+                            children: [
+                              ListTile(
+                                title: Text(dashProvider.lectureInfo['lecId']),
+                                subtitle: Text(dashProvider.lectureInfo['subName']),
+                                trailing: FilledButton(
+                                  onPressed: (){},
+                                  child: const Text('Take Attendance'),
+                                ),
+                              ),
+                            ],
+                          );
+                        }
                         return const Center(
-                          child: ProgressRing(),
+                          child: Text("No Live"),
                         );
-                      }
-                      return Card(
-                        child: dashProvider.lectureInfo != null
-                            ? Text(dashProvider.lectureInfo!)
-                            : Text("No Live"),
-                      );
-                    },
+                      },
+                    ),
                   ),
                 ),
-                Expanded(
+                const Expanded(
                   flex: 1,
                   child: Card(
                     child: Text('Card 2'),
