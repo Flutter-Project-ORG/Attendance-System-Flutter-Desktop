@@ -12,15 +12,26 @@ import '../res/contants.dart';
 import 'package:http/http.dart' as http;
 
 class DashboardViewModel with ChangeNotifier {
-  Future<String?> getLiveSubject(BuildContext context) async {
+
+  bool _isLoadingLiveLecture = false;
+  String? _lectureInfo;
+  String? get lectureInfo => _lectureInfo;
+  bool get isLoadingLiveLecture => _isLoadingLiveLecture;
+
+  void _notify(){
+    _isLoadingLiveLecture = !_isLoadingLiveLecture;
+    notifyListeners();
+  }
+
+  Future getLiveSubject(BuildContext context) async {
     SubjectModel subjectModel = SubjectModel.instance;
     String insId =
         Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;
     try {
+      //_notify();
       final Map<String, dynamic>? liveSubject =
           await subjectModel.getLiveSubject(insId);
       if (liveSubject == null) return null;
-      String? lectureId;
       final List<String> keys = liveSubject.keys.toList();
       for (int i = 0; i < keys.length; i++) {
         final value = liveSubject[keys[i]];
@@ -45,7 +56,7 @@ class DashboardViewModel with ChangeNotifier {
           DateTime end = DateTime.parse(
               '0000-00-00T${times['time1']['end'].toString().split('T')[1]}');
           if (currentTime.isAfter(start) && currentTime.isBefore(end)) {
-            lectureId = DateFormat('dd/MM/yyyy').format(currentDate);
+            _lectureInfo = DateFormat('dd/MM/yyyy').format(currentDate);
             break;
           }
           // print(currentTime);
@@ -64,13 +75,13 @@ class DashboardViewModel with ChangeNotifier {
             DateTime end = DateTime.parse(
                 '0000-00-00T${times['time2']['end'].toString().split('T')[1]}');
             if (currentTime.isAfter(start) && currentTime.isBefore(end)) {
-              lectureId = DateFormat('dd/MM/yyyy').format(currentDate);
+              _lectureInfo = DateFormat('dd/MM/yyyy').format(currentDate);
               break;
             }
           }
         }
       }
-      
+      //_notify();
     } catch (e) {
       throw e;
       showSnackbar(
