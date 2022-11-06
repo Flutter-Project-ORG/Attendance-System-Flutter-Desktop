@@ -17,7 +17,7 @@ class SubjectsView extends StatefulWidget {
 
 class _SubjectsViewState extends State<SubjectsView> {
   final SubjectsViewModel _viewModel = SubjectsViewModel();
-
+  
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
