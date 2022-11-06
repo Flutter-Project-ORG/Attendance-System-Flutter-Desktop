@@ -1,5 +1,11 @@
 import 'package:fluent_ui/fluent_ui.dart';
 
+
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:window_manager/window_manager.dart';
+
+
 import 'view_model/dashboard_view_model.dart';
 import 'view_model/lectures_view_model.dart';
 import 'view_model/subjects_view_model.dart';
@@ -19,8 +25,12 @@ import 'package:provider/provider.dart';
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
+
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
       overlays: [SystemUiOverlay.bottom, SystemUiOverlay.top]);
+
+
+
   //WindowManager _windowManager = WindowManager.instance;
   windowManager.setTitle('Student Attendance');
   windowManager.waitUntilReadyToShow().then((_) async {
@@ -58,9 +68,12 @@ Future main() async {
       child: const MyApp(),
     ),
   );
+
+
 }
 
 class MyApp extends StatelessWidget {
+
   const MyApp({super.key});
 
   @override
