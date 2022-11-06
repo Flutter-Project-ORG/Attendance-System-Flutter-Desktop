@@ -1,10 +1,39 @@
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 
-import 'res/colors.dart';
+import 'view_model/dashboard_view_model.dart';
+import 'view_model/lectures_view_model.dart';
+import 'view_model/subjects_view_model.dart';
+import 'view_model/auth_view_model.dart';
+import 'view_model/home_view_model.dart';
+import 'views/auth_view.dart';
 import 'views/home_view.dart';
+import 'views/lectures_view.dart';
+
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => HomeViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => AuthViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => SubjectsViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => LecturesViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => DashboardViewModel(),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -12,23 +41,23 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return FluentApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
+      // themeMode: ThemeMode.dark,
       theme: ThemeData(
-        canvasColor: CustomColors.lightBgColor,
-        colorScheme: ColorScheme.fromSwatch().copyWith(
-          primary: CustomColors.lightPrimaryColor,
-          secondary: CustomColors.lightSecondaryColor,
-        ),
+        brightness: Brightness.light,
       ),
       darkTheme: ThemeData(
-        canvasColor: CustomColors.darkBgColor,
-        colorScheme: ColorScheme.fromSwatch().copyWith(
-          primary: CustomColors.darkPrimaryColor,
-          secondary: CustomColors.darkSecondaryColor,
-        ),
+        brightness: Brightness.dark,
       ),
-      home: const HomeView(),
+      initialRoute: AuthView.routeName,
+      // initialRoute: HomeView.routeName,
+      routes: {
+        AuthView.routeName: (_) => AuthView(),
+        HomeView.routeName: (_) => const HomeView(),
+        LecturesView.routeName: (_) => const LecturesView(),
+      },
     );
   }
 }
