@@ -53,7 +53,7 @@ class DashboardViewModel with ChangeNotifier {
           DateTime end = DateTime.parse(
               '0000-00-00T${times['time1']['end'].toString().split('T')[1]}');
           if (currentTime.isAfter(start) && currentTime.isBefore(end)) {
-            _lectureInfo['lecId'] = DateFormat('dd/MM/yyyy').format(currentDate);
+            _lectureInfo['lecId'] = DateFormat('dd-MM-yyyy').format(currentDate);
             _lectureInfo['subId'] = keys[i];
             _lectureInfo['subName'] = value['subjectName'];
             _lectureInfo['insId'] = Provider.of<AuthViewModel>(context,listen: false).user!.instructorId!;
@@ -72,7 +72,7 @@ class DashboardViewModel with ChangeNotifier {
             DateTime end = DateTime.parse(
                 '0000-00-00T${times['time2']['end'].toString().split('T')[1]}');
             if (currentTime.isAfter(start) && currentTime.isBefore(end)) {
-              _lectureInfo['lecId'] = DateFormat('dd/MM/yyyy').format(currentDate);
+              _lectureInfo['lecId'] = DateFormat('dd-MM-yyyy').format(currentDate);
               _lectureInfo['subId'] = keys[i];
               _lectureInfo['subName'] = value['subjectName'];
               _lectureInfo['insId'] = Provider.of<AuthViewModel>(context,listen: false).user!.instructorId!;

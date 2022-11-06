@@ -6,5 +6,7 @@ class Constants {
   static const String authBaseUrl = "https://identitytoolkit.googleapis.com/v1/accounts:";
   static const String resetPassUrl = '${authBaseUrl}sendOobCode?key=$apiKey';
 
+  static const String encryptKey = 'MyEncryptKeyMyEncryptKeyMyEncryp';
+
 
 }

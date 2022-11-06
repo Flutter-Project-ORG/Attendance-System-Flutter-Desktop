@@ -26,11 +26,9 @@ class LectureAttendanceView extends StatelessWidget {
             return const Center(child: ProgressRing());
           }
           if (attendaceProvider.attendance.isEmpty) {
-            return Expanded(
-              child: Center(
-                child: Text(
-                  "There's no attendance for ${lectureData['lecId']!} lecture.",
-                ),
+            return Center(
+              child: Text(
+                "There's no attendance for ${lectureData['lecId']!} lecture.",
               ),
             );
           }
@@ -74,6 +72,18 @@ class LectureAttendanceView extends StatelessWidget {
                       ),
                     ),
                   ),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: const Text(
+                        "Attend",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
               Consumer<LecturesAttendanceViewModel>(
@@ -86,8 +96,9 @@ class LectureAttendanceView extends StatelessWidget {
                             att.filterSearch[keyList[index]];
                         return Row(
                           children: [
-                            RowData(singleAtt['studentId']),
+                            RowData(keyList[index]),
                             RowData(singleAtt['studentName']),
+                            RowData(singleAtt['isAttend'].toString()),
                           ],
                         );
                       },
