@@ -10,6 +10,7 @@ class DashboardView extends StatefulWidget {
 }
 
 class _DashboardViewState extends State<DashboardView> {
+<<<<<<< HEAD
 
   @override
   void initState() {
@@ -18,9 +19,23 @@ class _DashboardViewState extends State<DashboardView> {
   }
 
 
+=======
+  late Future _getLiveLecture;
+  @override
+  void initState() {
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+    //   _getLiveLecture = await Provider.of<DashboardViewModel>(context, listen: false)
+    //       .getLiveSubject(context);
+    // });
+    _getLiveLecture = Provider.of<DashboardViewModel>(context, listen: false)
+          .getLiveSubject(context);
+    super.initState();
+  }
+>>>>>>> 33e533c281ef2f84e79763b768297c7d1f4a7c0a
 
   @override
   Widget build(BuildContext context) {
+    final dashProvider = Provider.of<DashboardViewModel>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ScaffoldPage(
@@ -56,18 +71,16 @@ class _DashboardViewState extends State<DashboardView> {
                 Expanded(
                   flex: 2,
                   child: FutureBuilder(
-                    future:
-                        Provider.of<DashboardViewModel>(context, listen: false)
-                            .getLiveSubject(context),
+                    future: _getLiveLecture,
                     builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
+                      if (dashProvider.isLoadingLiveLecture) {
                         return const Center(
                           child: ProgressRing(),
                         );
                       }
                       return Card(
-                        child: snapshot.data != null
-                            ? Text('Card 2')
+                        child: dashProvider.lectureInfo != null
+                            ? Text(dashProvider.lectureInfo!)
                             : Text("No Live"),
                       );
                     },
