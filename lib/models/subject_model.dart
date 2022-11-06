@@ -55,5 +55,5 @@ class SubjectModel {
     return await http.get(url);
   }
 
-
+  
 }
