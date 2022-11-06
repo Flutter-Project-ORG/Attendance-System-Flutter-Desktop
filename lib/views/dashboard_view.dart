@@ -11,14 +11,13 @@ class DashboardView extends StatefulWidget {
 
 class _DashboardViewState extends State<DashboardView> {
 
-
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) async{
-      await Provider.of<DashboardViewModel>(context,listen: false).getLiveSubject(context);
-    });
+    print('initState');
     super.initState();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -53,11 +52,25 @@ class _DashboardViewState extends State<DashboardView> {
               ],
             ),
             Row(
-              children: const [
+              children: [
                 Expanded(
                   flex: 2,
-                  child: Card(
-                    child: Text('Card 2'),
+                  child: FutureBuilder(
+                    future:
+                        Provider.of<DashboardViewModel>(context, listen: false)
+                            .getLiveSubject(context),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: ProgressRing(),
+                        );
+                      }
+                      return Card(
+                        child: snapshot.data != null
+                            ? Text('Card 2')
+                            : Text("No Live"),
+                      );
+                    },
                   ),
                 ),
                 Expanded(

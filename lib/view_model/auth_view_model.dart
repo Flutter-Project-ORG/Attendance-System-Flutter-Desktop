@@ -1,8 +1,8 @@
 import 'package:attendance_system_flutter_desktop/models/instructor_model.dart';
+import 'package:attendance_system_flutter_desktop/views/dashboard_view.dart';
 import 'package:attendance_system_flutter_desktop/views/home_view.dart';
 import 'package:attendance_system_flutter_desktop/views/splash.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-
 class AuthViewModel with ChangeNotifier {
   AuthType authType = AuthType.login;
   InstructorModel instructorModel = InstructorModel.instance;
@@ -25,7 +25,7 @@ class AuthViewModel with ChangeNotifier {
             email: userInfo['email']!, password: userInfo['password']!, username: userInfo['username']!);
       }
       notifyListeners();
-      Navigator.pushReplacementNamed(context, Splash.routeName);
+      Navigator.pushReplacementNamed(context, HomeView.routeName);
     } catch (e) {
       String message = '';
       if (e == 'EMAIL_EXISTS') {

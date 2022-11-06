@@ -12,54 +12,64 @@ import '../res/contants.dart';
 import 'package:http/http.dart' as http;
 
 class DashboardViewModel with ChangeNotifier {
-  // Future<void> getLiveLecture(BuildContext context)async{
-  //   String insId = Provider.of<AuthViewModel>(context).user!.instructorId!;
-  //   try {
-  //     Uri url = Uri.parse('${Constants.realtimeUrl}/lectures/$insId/$subId.json');
-  //     http.Response res = await http.get(
-  //       url,
-  //     );
-  //   } catch (e) {
-  //     rethrow;
-  //   }
-  // }
 
+  
   Future<String?> getLiveSubject(BuildContext context) async {
     SubjectModel subjectModel = SubjectModel.instance;
-    String insId = Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;
+    String insId =
+    Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;
     try {
-      final Map<String, dynamic>? liveSubject = await subjectModel.getLiveSubject(insId);
+      final Map<String, dynamic>? liveSubject =
+      await subjectModel.getLiveSubject(insId);
       if (liveSubject == null) return null;
-      liveSubject.forEach((key, value) {
+      String? lectureId;
+      final List<String> keys = liveSubject.keys.toList();
+      for (int i = 0; i < keys.length; i++) {
+        final value = liveSubject[keys[i]];
         Map<String, dynamic> times = value['times'];
-        // print(key);
         DateTime currentDate = DateTime.now();
-        String currentDayName = DateFormat('EEEE').format(currentDate).toLowerCase();
-        // print(currentDayName);
+        String currentDayName =
+        DateFormat('EEEE').format(currentDate).toLowerCase();
         List days1 = times['time1']['days'];
-        if (days1.contains(currentDayName)) {
-          DateTime currentTime = DateTime.parse('0000-00-00T${currentDate.toIso8601String().split('T')[1]}');
-          DateTime start = DateTime.parse('0000-00-00T${times['time1']['start'].toString().split('T')[1]}');
-          DateTime end = DateTime.parse('0000-00-00T${times['time1']['end'].toString().split('T')[1]}');
-          if(currentTime.isAfter(start) && currentTime.isBefore(end)){
-            print(true);
-          }else{
-            print(false);
-          }
-          print(currentTime);
-          print(start);
-          print(end);
+        final startDate = DateTime.parse(value['startDate']);
+        final endDate = DateTime.parse(value['endDate']);
+        if (currentDate.isBefore(startDate) || currentDate.isAfter(endDate)) {
+          continue;
         }
-        // print(days1);
+        if (days1.contains(currentDayName)) {
+          DateTime currentTime = DateTime.parse(
+              '0000-00-00T${currentDate.toIso8601String().split('T')[1]}');
+          DateTime start = DateTime.parse(
+              '0000-00-00T${times['time1']['start'].toString().split('T')[1]}');
+          DateTime end = DateTime.parse(
+              '0000-00-00T${times['time1']['end'].toString().split('T')[1]}');
+          if (currentTime.isAfter(start) && currentTime.isBefore(end)) {
+            lectureId = DateFormat('dd/MM/yyyy').format(currentDate);
+            break;
+          }
+        }
+
         if (times['time2'] != null) {
           List days2 = times['time2']['days'];
           // print(days2);
-          if (days2.contains(currentDayName)) {}
+          if (days2.contains(currentDayName)) {
+            DateTime currentTime = DateTime.parse(
+                '0000-00-00T${currentDate.toIso8601String().split('T')[1]}');
+            DateTime start = DateTime.parse(
+                '0000-00-00T${times['time2']['start'].toString().split('T')[1]}');
+            DateTime end = DateTime.parse(
+                '0000-00-00T${times['time2']['end'].toString().split('T')[1]}');
+            if (currentTime.isAfter(start) && currentTime.isBefore(end)) {
+              lectureId = DateFormat('dd/MM/yyyy').format(currentDate);
+              break;
+            }
+          }
         }
-      });
+      }
+
     } catch (e) {
-      throw e;
-      showSnackbar(context, const Snackbar(content: Text('Something went wrong!')));
+      showSnackbar(
+          context, const Snackbar(content: Text('Something went wrong!')));
     }
   }
 }
