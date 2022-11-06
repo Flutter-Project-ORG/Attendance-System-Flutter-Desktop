@@ -1,11 +1,13 @@
-import 'package:attendance_system_flutter_desktop/view_model/lectures_view_model.dart';
-import 'package:attendance_system_flutter_desktop/view_model/subjects_view_model.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
-import 'res/colors.dart';
+
+import 'view_model/dashboard_view_model.dart';
+import 'view_model/lectures_view_model.dart';
+import 'view_model/subjects_view_model.dart';
 import 'view_model/auth_view_model.dart';
 import 'view_model/home_view_model.dart';
 import 'view_model/lecture_attendance_view_model.dart';
@@ -20,6 +22,7 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
 
+
   SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual, overlays: [SystemUiOverlay.bottom, SystemUiOverlay.top]);
   //WindowManager _windowManager = WindowManager.instance;
@@ -31,6 +34,9 @@ Future main() async {
     await windowManager.setMaximumSize(Size(size.width, size.height * 0.95),);
     windowManager.show();
   }); 
+
+
+void main() {
   runApp(
     MultiProvider(
       providers: [
@@ -48,6 +54,9 @@ Future main() async {
         ),
         ChangeNotifierProvider(
           create: (_) => LecturesAttendanceViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => DashboardViewModel(),
         ),
       ],
       child: const MyApp(),

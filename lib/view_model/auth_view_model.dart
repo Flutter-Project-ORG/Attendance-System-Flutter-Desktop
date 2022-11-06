@@ -5,7 +5,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 
 class AuthViewModel with ChangeNotifier {
   AuthType authType = AuthType.login;
-
+  InstructorModel instructorModel = InstructorModel.instance;
   void changeAuthType() {
     authType = authType == AuthType.login ? AuthType.signUp : AuthType.login;
     notifyListeners();
@@ -17,10 +17,11 @@ class AuthViewModel with ChangeNotifier {
   Future<void> authenticate(Map<String, String> userInfo, BuildContext context) async {
     try {
       if (authType == AuthType.login) {
-        user = await InstructorModel().authenticate(
+
+        user = await instructorModel.authenticate(
             email: userInfo['email']!, password: userInfo['password']!, isLogin: true);
       } else {
-        user = await InstructorModel().authenticate(
+        user = await instructorModel.authenticate(
             email: userInfo['email']!, password: userInfo['password']!, username: userInfo['username']!);
       }
       notifyListeners();
@@ -51,6 +52,48 @@ class AuthViewModel with ChangeNotifier {
             extended: true,
           ));
     }
+  }
+  Future<void> resetPassword(BuildContext context)async{
+    await showDialog(
+      context: context,
+      builder: (context) {
+        TextEditingController controller = TextEditingController();
+        return ContentDialog(
+          title: const Text('Reset your password'),
+          content: TextBox(
+            controller: controller,
+            header: 'Enter your email',
+            placeholder: 'Email',
+          ),
+          actions: [
+            Button(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            FilledButton(
+              child: const Text('Reset'),
+              onPressed: () async {
+                if (controller.text.isEmpty) {
+                  showSnackbar(context, const Snackbar(content: Text('You must insert an email')));
+                  return;
+                }
+                try {
+                  await instructorModel .restPassword(controller.text).then((_) {
+                    Navigator.pop(context);
+                    showSnackbar(context, const Snackbar(content: Text('Check your email')),);
+                  });
+
+                } catch (e) {
+                  showSnackbar(context, Snackbar(content: Text(e.toString())));
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 
