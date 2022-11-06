@@ -56,7 +56,7 @@ class _SubjectsViewState extends State<SubjectsView> {
                 Map<String, dynamic> singleSubject = provider.subjects[keyList[index]];
                 return GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, LecturesView.routeName, arguments: {
+                    Navigator.pushNamed(context, LecturesView.routeName,arguments: {
                       "subName" : singleSubject['subjectName'],
                       "subId" : keyList[index],
                     });

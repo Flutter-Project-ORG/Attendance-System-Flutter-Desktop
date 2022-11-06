@@ -1,5 +1,6 @@
 import 'package:attendance_system_flutter_desktop/models/instructor_model.dart';
 import 'package:attendance_system_flutter_desktop/views/home_view.dart';
+import 'package:attendance_system_flutter_desktop/views/splash.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
 class AuthViewModel with ChangeNotifier {
@@ -11,6 +12,7 @@ class AuthViewModel with ChangeNotifier {
   }
 
   InstructorModel? user;
+  
 
   Future<void> authenticate(Map<String, String> userInfo, BuildContext context) async {
     try {
@@ -23,7 +25,7 @@ class AuthViewModel with ChangeNotifier {
             email: userInfo['email']!, password: userInfo['password']!, username: userInfo['username']!);
       }
       notifyListeners();
-      Navigator.pushReplacementNamed(context, HomeView.routeName);
+      Navigator.pushReplacementNamed(context, Splash.routeName);
     } catch (e) {
       String message = '';
       if (e == 'EMAIL_EXISTS') {
