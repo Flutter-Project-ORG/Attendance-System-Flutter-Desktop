@@ -21,11 +21,12 @@ class _LecturesViewState extends State<LecturesView> {
         Provider.of<LecturesViewModel>(context, listen: false);
     return NavigationView(
       appBar: NavigationAppBar(
-        title: Text(subject['sub']['subjectName']!),
+        title: Text(subject['subName']!),
       ),
       content: FutureBuilder(
         future: lectureProvider.getLecturesBySubjectId(
           subject['subId']!,
+          context
         ),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -36,24 +37,25 @@ class _LecturesViewState extends State<LecturesView> {
               child: Text('You don\'t have any lecture for that subject yet.'),
             );
           }
-          List<String> keyList = lectureProvider.lectures.keys.toList();
+          List<dynamic> lectures = lectureProvider.lectures;
           return GridView.builder(
             padding: const EdgeInsets.all(15),
-            itemCount: lectureProvider.lectures.length,
+            itemCount: lectures.length,
             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 240.0,
               mainAxisSpacing: 16.0,
               crossAxisSpacing: 16.0,
             ),
             itemBuilder: (BuildContext context, int index) {
-              Map<String, dynamic> singleLecture =
-                  lectureProvider.lectures[keyList[index]];
               return GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, LectureAttendanceView.routeName,arguments: singleLecture);
+                  Navigator.pushNamed(context, LectureAttendanceView.routeName,arguments: {
+                    "lecId" : lectures[index],
+                    "subId" : subject['subId'],
+                  });
                 },
                 child: Card(
-                  child: Text(singleLecture['lectureName']),
+                  child: Text(lectures[index]),
                 ),
               );
             },

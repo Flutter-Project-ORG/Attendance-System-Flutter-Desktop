@@ -56,13 +56,32 @@ class _SubjectsViewState extends State<SubjectsView> {
                 Map<String, dynamic> singleSubject = provider.subjects[keyList[index]];
                 return GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, LecturesView.routeName,arguments: {
-                      "sub" : singleSubject,
+                    Navigator.pushNamed(context, LecturesView.routeName, arguments: {
+                      "subName" : singleSubject['subjectName'],
                       "subId" : keyList[index],
                     });
                   },
                   child: Card(
-                    child: Text(singleSubject['subjectName']),
+                    child: Stack(
+                      children: [
+                        Text(singleSubject['subjectName']),
+                        Positioned(
+                          bottom: 0.0,
+                          left: 0.0,
+                          child: FilledButton(
+                            style: ButtonStyle(
+                              padding: ButtonState.all<EdgeInsets>(const EdgeInsets.all(4.0)),
+                              backgroundColor: ButtonState.all<Color>(Colors.red),
+                              foregroundColor: ButtonState.all<Color>(Colors.white),
+                            ),
+                            onPressed: () {
+                              provider.deleteSubject(context, keyList[index], singleSubject['subjectName']);
+                            },
+                            child:const Text('Delete'),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
