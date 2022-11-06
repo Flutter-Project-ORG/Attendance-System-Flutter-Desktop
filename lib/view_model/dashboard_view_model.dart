@@ -24,12 +24,12 @@ class DashboardViewModel with ChangeNotifier {
   //   }
   // }
 
-  Future getLiveSubject(BuildContext context) async {
+  Future<String?> getLiveSubject(BuildContext context) async {
     SubjectModel subjectModel = SubjectModel.instance;
     String insId = Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;
     try {
       final Map<String, dynamic>? liveSubject = await subjectModel.getLiveSubject(insId);
-      if (liveSubject == null) return;
+      if (liveSubject == null) return null;
       liveSubject.forEach((key, value) {
         Map<String, dynamic> times = value['times'];
         // print(key);
