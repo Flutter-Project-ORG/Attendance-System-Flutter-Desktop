@@ -31,7 +31,6 @@ Future main() async {
     await windowManager.setMaximumSize(Size(size.width, size.height * 0.95),);
     windowManager.show();
   });
-
   runApp(
     MultiProvider(
       providers: [
@@ -48,17 +47,15 @@ Future main() async {
           create: (_) => LecturesViewModel(),
         ),
         ChangeNotifierProvider(
-          create: (_) => LecturesAttendanceViewModel(),
+          create: (_) => DashboardViewModel(),
         ),
         ChangeNotifierProvider(
-          create: (_) => DashboardViewModel(),
+          create: (_) => LecturesAttendanceViewModel(),
         ),
       ],
       child: const MyApp(),
     ),
   );
-
-
 }
 
 class MyApp extends StatelessWidget {
