@@ -19,7 +19,10 @@ dependencies:
   http: ^0.13.5
   font_awesome_flutter: ^10.2.1
   fluent_ui: ^4.0.3
+<<<<<<< HEAD
   window_manager: ^0.2.7
+=======
+>>>>>>> 4c6aa28bc3e29cc4e01d44821316d1e6550d0b45
 
 dev_dependencies:
   flutter_test:
