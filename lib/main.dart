@@ -42,7 +42,6 @@ Future main() async {
     );
     windowManager.show();
   });
-
   runApp(
     MultiProvider(
       providers: [
@@ -68,8 +67,6 @@ Future main() async {
       child: const MyApp(),
     ),
   );
-
-
 }
 
 class MyApp extends StatelessWidget {

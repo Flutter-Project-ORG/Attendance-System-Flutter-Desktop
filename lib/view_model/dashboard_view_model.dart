@@ -23,29 +23,26 @@ class DashboardViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future getLiveSubject(BuildContext context) async {
+  Future<void> getLiveSubject(BuildContext context) async {
     SubjectModel subjectModel = SubjectModel.instance;
     String insId =
-        Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;
+    Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;
     try {
       //_notify();
       final Map<String, dynamic>? liveSubject =
-          await subjectModel.getLiveSubject(insId);
+      await subjectModel.getLiveSubject(insId);
       if (liveSubject == null) return null;
       final List<String> keys = liveSubject.keys.toList();
       for (int i = 0; i < keys.length; i++) {
         final value = liveSubject[keys[i]];
         Map<String, dynamic> times = value['times'];
-        // print(key);
         DateTime currentDate = DateTime.now();
         String currentDayName =
-            DateFormat('EEEE').format(currentDate).toLowerCase();
-        // print(currentDayName);
+        DateFormat('EEEE').format(currentDate).toLowerCase();
         List days1 = times['time1']['days'];
         final startDate = DateTime.parse(value['startDate']);
         final endDate = DateTime.parse(value['endDate']);
         if (currentDate.isBefore(startDate) || currentDate.isAfter(endDate)) {
-          print("yazan");
           continue;
         }
         if (days1.contains(currentDayName)) {
@@ -59,9 +56,6 @@ class DashboardViewModel with ChangeNotifier {
             _lectureInfo = DateFormat('dd/MM/yyyy').format(currentDate);
             break;
           }
-          // print(currentTime);
-          // print(start);
-          // print(end);
         }
 
         if (times['time2'] != null) {
@@ -83,7 +77,6 @@ class DashboardViewModel with ChangeNotifier {
       }
       //_notify();
     } catch (e) {
-      throw e;
       showSnackbar(
           context, const Snackbar(content: Text('Something went wrong!')));
     }

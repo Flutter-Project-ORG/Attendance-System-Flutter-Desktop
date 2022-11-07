@@ -10,17 +10,6 @@ class DashboardView extends StatefulWidget {
 }
 
 class _DashboardViewState extends State<DashboardView> {
-  late Future _getLiveLecture;
-  @override
-  void initState() {
-    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-    //   _getLiveLecture = await Provider.of<DashboardViewModel>(context, listen: false)
-    //       .getLiveSubject(context);
-    // });
-    _getLiveLecture = Provider.of<DashboardViewModel>(context, listen: false)
-          .getLiveSubject(context);
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
