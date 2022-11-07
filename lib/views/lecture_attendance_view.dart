@@ -2,6 +2,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 import '../view_model/lecture_attendance_view_model.dart';
 import '../widgets/row_data.dart';
+import '../widgets/is_attend_drop.dart';
 
 class LectureAttendanceView extends StatelessWidget {
   const LectureAttendanceView({super.key});
@@ -52,18 +53,6 @@ class LectureAttendanceView extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       child: const Text(
-                        "Student ID",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: const Text(
                         "Student Name",
                         style: TextStyle(
                           fontSize: 20,
@@ -96,9 +85,17 @@ class LectureAttendanceView extends StatelessWidget {
                             att.filterSearch[keyList[index]];
                         return Row(
                           children: [
-                            RowData(keyList[index]),
+                            //RowData(keyList[index]),
                             RowData(singleAtt['studentName']),
-                            RowData(singleAtt['isAttend'].toString()),
+                            IsAttendDrop(
+                              singleAtt['isAttend'],
+                              {
+                                "studentId": keyList[index],
+                                "subId": lectureData['subId']!,
+                                "lecId": lectureData['lecId']!,
+                              },
+                            ),
+                            //RowData(singleAtt['isAttend'].toString()),
                           ],
                         );
                       },
