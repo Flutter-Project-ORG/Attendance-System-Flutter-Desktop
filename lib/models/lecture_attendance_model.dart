@@ -19,17 +19,10 @@ class LectureAttendanceModel{
 
   static Future addAttendanceList(String subId,String lecId,String insId) async {
     Map<String,dynamic> students = await _getStudentsBySubjectId(subId,insId);
-    Map attStudents = {};
-    // Map t = students.putIfAbsent('isAttend', () => false);
-
     students.forEach((key, value) {
       students[key].putIfAbsent('isAttend', () => false);
-      // attStudents[key] = students;
     });
-      print(students);
     Uri url = Uri.parse('${Constants.realtimeUrl}/attendance/$insId/$subId/$lecId.json');
     return await http.put(url,body: jsonEncode(students));
   }
-
-
 }

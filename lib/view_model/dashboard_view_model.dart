@@ -21,6 +21,7 @@ class DashboardViewModel with ChangeNotifier {
     _isLoadingLiveLecture = !_isLoadingLiveLecture;
     notifyListeners();
   }
+
   Future<void> getLiveSubject(BuildContext context) async {
     SubjectModel subjectModel = SubjectModel.instance;
     String insId =
