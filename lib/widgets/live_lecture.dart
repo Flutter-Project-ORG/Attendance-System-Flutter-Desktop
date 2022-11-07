@@ -14,11 +14,10 @@ class LiveLecture extends StatefulWidget {
 class _LiveLectureState extends State<LiveLecture> {
   late Future _getLiveLecture;
 
-  final DashboardViewModel _viewModel = DashboardViewModel();
 
   @override
   void initState() {
-    _getLiveLecture = _viewModel.getLiveSubject(context);
+    _getLiveLecture = Provider.of<DashboardViewModel>(context,listen: false).getLiveSubject(context);
     super.initState();
   }
   @override
