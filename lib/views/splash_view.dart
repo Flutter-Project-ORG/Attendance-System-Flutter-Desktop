@@ -8,6 +8,8 @@ import 'package:provider/provider.dart';
 import '../models/instructor_model.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 
+import '../view_model/splash_view_model.dart';
+
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
 
@@ -18,16 +20,14 @@ class SplashView extends StatefulWidget {
 }
 
 class _SplashViewState extends State<SplashView> {
+
+  late SplashViewModel _viewModel;
+
   @override
   void initState() {
+    _viewModel = SplashViewModel();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      InstructorModel? instructorModel = await InstructorModel.instance.getAuthData();
-      if (instructorModel != null) {
-        Provider.of<AuthViewModel>(context,listen: false).setUser = instructorModel;
-        Navigator.of(context).pushReplacementNamed(HomeView.routeName);
-        return;
-      }
-      Navigator.of(context).pushReplacementNamed(AuthView.routeName);
+      _viewModel.getInitData(context);
     });
     super.initState();
   }
