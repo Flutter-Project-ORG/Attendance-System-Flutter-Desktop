@@ -19,6 +19,9 @@ class LectureAttendanceModel {
     Uri url = Uri.parse(
         '${Constants.realtimeUrl}/subjects-students/$insId/$subId.json');
     http.Response res = await http.get(url);
+    if(res.body.toString() == 'null'){
+      throw 'There is no students for that subject.';
+    }
     return jsonDecode(res.body) as Map<String, dynamic>;
   }
 

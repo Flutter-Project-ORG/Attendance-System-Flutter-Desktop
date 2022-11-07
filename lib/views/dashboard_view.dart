@@ -47,13 +47,11 @@ class _DashboardViewState extends State<DashboardView> {
             ),
             Expanded(
               child: Row(
-                children: const [
-                  LiveLecture(),
+                children:  [
+                  const LiveLecture(),
                   Expanded(
                     flex: 1,
-                    child: Card(
-                      child: Text('Card 2'),
-                    ),
+                    child: Image.asset('assets/images/logo.png'),
                   ),
                 ],
               ),

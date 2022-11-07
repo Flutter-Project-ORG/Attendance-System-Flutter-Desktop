@@ -13,17 +13,21 @@ class LecturesAttendanceViewModel with ChangeNotifier {
 
   Map<String, dynamic> get attendance => _attendance;
 
-  final LectureAttendanceModel _lectureAttendanceModel =
-      LectureAttendanceModel.instance;
+  final LectureAttendanceModel _lectureAttendanceModel = LectureAttendanceModel.instance;
 
-  Future getAttendanceByLectureIdAndSubjectId(
-      String subId, String lecId, BuildContext ctx) async {
-    final uid =
-        Provider.of<AuthViewModel>(ctx, listen: false).user!.instructorId;
+  String? _user;
+
+  String? get user => _user;
+
+  set user(String? value) {
+    _user = value;
+  }
+
+  Future getAttendanceByLectureIdAndSubjectId(String subId, String lecId, BuildContext ctx) async {
+    final uid = Provider.of<AuthViewModel>(ctx, listen: false).user!.instructorId;
     _attendance.clear();
     try {
-      final response = await _lectureAttendanceModel
-          .getAttendanceBySubjectIdAndLectureId(subId, lecId, uid!);
+      final response = await _lectureAttendanceModel.getAttendanceBySubjectIdAndLectureId(subId, lecId, uid!);
       _filterSearch.clear();
       _attendance = json.decode(response.body) as Map<String, dynamic>;
       _filterSearch = json.decode(response.body) as Map<String, dynamic>;
@@ -36,39 +40,26 @@ class LecturesAttendanceViewModel with ChangeNotifier {
     _filterSearch.clear();
     _filterSearch.addAll(_attendance);
     _filterSearch.removeWhere(
-      (key, value) => !value['studentName']
-          .toString()
-          .toLowerCase()
-          .startsWith(search.toLowerCase()),
+      (key, value) => !value['studentName'].toString().toLowerCase().startsWith(search.toLowerCase()),
     );
     notifyListeners();
   }
 
-  Future addAttendanceList(
-      String subId, String lecId, BuildContext context) async {
-    String insId =
-        Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;
+  Future addAttendanceList(String subId, String lecId, BuildContext context) async {
+    String insId = Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;
     try {
       await _lectureAttendanceModel.addAttendanceList(subId, lecId, insId);
     } catch (e) {
-      showSnackbar(
-          context, const Snackbar(content: Text('Something went wrong!')));
+      rethrow;
     }
   }
 
-  Future changeStudentAttendanceState(bool isAttend,Map<String,dynamic> data , BuildContext context) async {
+  Future changeStudentAttendanceState(bool isAttend, Map<String, dynamic> data, BuildContext context) async {
     try {
-      final insId =
-          Provider.of<AuthViewModel>(context, listen: false).user!.instructorId;
-      await _lectureAttendanceModel.changeStudentAttendanceState(
-        isAttend,
-        insId!,
-        data
-      );
+      final insId = Provider.of<AuthViewModel>(context, listen: false).user!.instructorId;
+      await _lectureAttendanceModel.changeStudentAttendanceState(isAttend, insId!, data);
     } catch (err) {
-      throw err;
+      rethrow;
     }
   }
-
-  
 }

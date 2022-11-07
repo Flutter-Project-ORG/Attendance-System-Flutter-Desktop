@@ -58,23 +58,32 @@ class _LiveLectureState extends State<LiveLecture> {
                       subtitle: Text(dashProvider.lectureInfo['subName']),
                       trailing: FilledButton(
                         onPressed: () async {
-                          await Provider.of<LecturesAttendanceViewModel>(
-                            context,
-                            listen: false,
-                          ).addAttendanceList(
-                            dashProvider.lectureInfo['subId'],
-                            dashProvider.lectureInfo['lecId'],
-                            context,
-                          );
-                          final String insId =
-                              Provider.of<AuthViewModel>(context, listen: false)
-                                  .user!
-                                  .instructorId!;
+                          try{
+                            await Provider.of<LecturesAttendanceViewModel>(
+                              context,
+                              listen: false,
+                            ).addAttendanceList(
+                              dashProvider.lectureInfo['subId'],
+                              dashProvider.lectureInfo['lecId'],
+                              context,
+                            );
+                            final String insId =
+                            Provider.of<AuthViewModel>(context, listen: false)
+                                .user!
+                                .instructorId!;
 
-                          dashProvider.showAttendanceQr(
-                            context,
-                            "$insId/${dashProvider.lectureInfo['subId']}/${dashProvider.lectureInfo['lecId']}",
-                          );
+                            dashProvider.showAttendanceQr(
+                              context,
+                              "$insId/${dashProvider.lectureInfo['subId']}/${dashProvider.lectureInfo['lecId']}",
+                              dashProvider.lectureInfo['lecId'],
+                            );
+                          }catch(e){
+                            if(e.toString() == 'There is no students for that subject.'){
+                              showSnackbar(context,  Snackbar(content: Text(e.toString())));
+                              return;
+                            }
+                            showSnackbar(context, const Snackbar(content: Text('Something went wrong!')));
+                          }
                         },
                         child: const Text('Take Attendance'),
                       ),

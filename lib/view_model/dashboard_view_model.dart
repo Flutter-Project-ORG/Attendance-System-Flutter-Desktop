@@ -17,31 +17,23 @@ import 'package:encrypt/encrypt.dart' as encrypt;
 import '../external_providers/attendance_qr_provider.dart';
 
 class DashboardViewModel with ChangeNotifier {
-  bool _isLoadingLiveLecture = false;
+  final bool _isLoadingLiveLecture = false;
   final Map<String, dynamic> _lectureInfo = {};
   Map<String, dynamic> get lectureInfo => _lectureInfo;
   bool get isLoadingLiveLecture => _isLoadingLiveLecture;
 
-  void _notify() {
-    _isLoadingLiveLecture = !_isLoadingLiveLecture;
-    notifyListeners();
-  }
-
   Future<void> getLiveSubject(BuildContext context) async {
     SubjectModel subjectModel = SubjectModel.instance;
-    String insId =
-        Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;
+    String insId = Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;
     try {
-      final Map<String, dynamic>? liveSubject =
-          await subjectModel.getLiveSubject(insId);
+      final Map<String, dynamic>? liveSubject = await subjectModel.getLiveSubject(insId);
       if (liveSubject == null) return;
       final List<String> keys = liveSubject.keys.toList();
       for (int i = 0; i < keys.length; i++) {
         final value = liveSubject[keys[i]];
         Map<String, dynamic> times = value['times'];
         DateTime currentDate = DateTime.now();
-        String currentDayName =
-            DateFormat('EEEE').format(currentDate).toLowerCase();
+        String currentDayName = DateFormat('EEEE').format(currentDate).toLowerCase();
         List days1 = times['time1']['days'];
         final startDate = DateTime.parse(value['startDate']);
         final endDate = DateTime.parse(value['endDate']);
@@ -49,21 +41,14 @@ class DashboardViewModel with ChangeNotifier {
           continue;
         }
         if (days1.contains(currentDayName)) {
-          DateTime currentTime = DateTime.parse(
-              '0000-00-00T${currentDate.toIso8601String().split('T')[1]}');
-          DateTime start = DateTime.parse(
-              '0000-00-00T${times['time1']['start'].toString().split('T')[1]}');
-          DateTime end = DateTime.parse(
-              '0000-00-00T${times['time1']['end'].toString().split('T')[1]}');
+          DateTime currentTime = DateTime.parse('0000-00-00T${currentDate.toIso8601String().split('T')[1]}');
+          DateTime start = DateTime.parse('0000-00-00T${times['time1']['start'].toString().split('T')[1]}');
+          DateTime end = DateTime.parse('0000-00-00T${times['time1']['end'].toString().split('T')[1]}');
           if (currentTime.isAfter(start) && currentTime.isBefore(end)) {
-            _lectureInfo['lecId'] =
-                DateFormat('dd-MM-yyyy').format(currentDate);
+            _lectureInfo['lecId'] = DateFormat('dd-MM-yyyy').format(currentDate);
             _lectureInfo['subId'] = keys[i];
             _lectureInfo['subName'] = value['subjectName'];
-            _lectureInfo['insId'] =
-                Provider.of<AuthViewModel>(context, listen: false)
-                    .user!
-                    .instructorId!;
+            _lectureInfo['insId'] = Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;
             break;
           }
         }
@@ -71,50 +56,39 @@ class DashboardViewModel with ChangeNotifier {
         if (times['time2'] != null) {
           List days2 = times['time2']['days'];
           if (days2.contains(currentDayName)) {
-            DateTime currentTime = DateTime.parse(
-                '0000-00-00T${currentDate.toIso8601String().split('T')[1]}');
-            DateTime start = DateTime.parse(
-                '0000-00-00T${times['time2']['start'].toString().split('T')[1]}');
-            DateTime end = DateTime.parse(
-                '0000-00-00T${times['time2']['end'].toString().split('T')[1]}');
+            DateTime currentTime = DateTime.parse('0000-00-00T${currentDate.toIso8601String().split('T')[1]}');
+            DateTime start = DateTime.parse('0000-00-00T${times['time2']['start'].toString().split('T')[1]}');
+            DateTime end = DateTime.parse('0000-00-00T${times['time2']['end'].toString().split('T')[1]}');
             if (currentTime.isAfter(start) && currentTime.isBefore(end)) {
-              _lectureInfo['lecId'] =
-                  DateFormat('dd-MM-yyyy').format(currentDate);
+              _lectureInfo['lecId'] = DateFormat('dd-MM-yyyy').format(currentDate);
               _lectureInfo['subId'] = keys[i];
               _lectureInfo['subName'] = value['subjectName'];
-              _lectureInfo['insId'] =
-                  Provider.of<AuthViewModel>(context, listen: false)
-                      .user!
-                      .instructorId!;
+              _lectureInfo['insId'] = Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;
               break;
             }
           }
         }
       }
     } catch (e) {
-      showSnackbar(
-          context, const Snackbar(content: Text('Something went wrong!')));
+      showSnackbar(context, const Snackbar(content: Text('Something went wrong!')));
     }
   }
 
-  Future showAttendanceQr(
-      BuildContext context, String path) async {
+  Future showAttendanceQr(BuildContext context, String path, String lecId) async {
     final key = encrypt.Key.fromUtf8(Constants.encryptKey);
     final iv = encrypt.IV.fromLength(16);
     final encrypter = encrypt.Encrypter(encrypt.AES(key));
-
+    await Provider.of<AttendanceQrProvider>(context, listen: false).changeRandomNum(lecId);
     Timer timer = Timer.periodic(
-      Duration(seconds: 5),
-      (timer) {
-        Provider.of<AttendanceQrProvider>(context, listen: false)
-            .changeRandomNum();
+      const Duration(seconds: 10),
+      (_) async {
+        await Provider.of<AttendanceQrProvider>(context, listen: false).changeRandomNum(lecId);
       },
     );
 
     showDialog(
         context: context,
         builder: (ctx) {
-          //print(num);
           return ContentDialog(
             title: const Text('Please scan to attend'),
             content: Row(
@@ -125,10 +99,9 @@ class DashboardViewModel with ChangeNotifier {
                     Map<String, String> data = {
                       "path": path,
                       "randomNum": qr.randomNum.toString(),
+                      "lecId": lecId,
                     };
-                    print(data);
-                    final encrypted =
-                        encrypter.encrypt(jsonEncode(data), iv: iv);
+                    final encrypted = encrypter.encrypt(jsonEncode(data), iv: iv);
                     return QrImage(
                       data: encrypted.base64,
                       version: QrVersions.auto,
@@ -141,9 +114,10 @@ class DashboardViewModel with ChangeNotifier {
             actions: [
               TextButton(
                 child: const Text('Cancel'),
-                onPressed: () {
+                onPressed: () async {
                   Navigator.pop(context);
                   timer.cancel();
+                  await Provider.of<AttendanceQrProvider>(context, listen: false).deleteRandomToDB(lecId);
                 },
               ),
             ],
