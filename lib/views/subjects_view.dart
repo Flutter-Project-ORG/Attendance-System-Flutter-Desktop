@@ -1,12 +1,14 @@
 import 'dart:convert';
+import 'package:attendance_system_flutter_desktop/res/contants.dart';
+import 'package:flutter/material.dart' as material;
 
 import 'package:attendance_system_flutter_desktop/view_model/subjects_view_model.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/material.dart' as material;
-import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 
+import 'package:provider/provider.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'lectures_view.dart';
+import 'package:encrypt/encrypt.dart' as encrypt;
 
 class SubjectsView extends StatefulWidget {
   const SubjectsView({Key? key}) : super(key: key);
@@ -62,24 +64,61 @@ class _SubjectsViewState extends State<SubjectsView> {
                     });
                   },
                   child: Card(
-                    child: Stack(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(singleSubject['subjectName']),
-                        Positioned(
-                          bottom: 0.0,
-                          left: 0.0,
-                          child: FilledButton(
-                            style: ButtonStyle(
-                              padding: ButtonState.all<EdgeInsets>(const EdgeInsets.all(4.0)),
-                              backgroundColor: ButtonState.all<Color>(Colors.red),
-                              foregroundColor: ButtonState.all<Color>(Colors.white),
+                        const Spacer(),
+                        Row(
+                          children: [
+                            FilledButton(
+                              style: ButtonStyle(
+                                backgroundColor: ButtonState.all<Color>(Colors.red),
+                                foregroundColor: ButtonState.all<Color>(Colors.white),
+                              ),
+                              onPressed: () {
+                                provider.deleteSubject(context, keyList[index], singleSubject['subjectName']);
+                              },
+                              child:const Text('Delete'),
                             ),
-                            onPressed: () {
-                              provider.deleteSubject(context, keyList[index], singleSubject['subjectName']);
-                            },
-                            child:const Text('Delete'),
-                          ),
+                            const SizedBox(width: 32.0,),
+                            FilledButton(
+                              style: ButtonStyle(
+                                foregroundColor: ButtonState.all<Color>(Colors.white),
+                              ),
+                              onPressed: () {
+                                final subId = keyList[index];
+                                final key = encrypt.Key.fromUtf8(Constants.encryptKey);
+                                final iv = encrypt.IV.fromLength(16);
+                                final encrypter = encrypt.Encrypter(encrypt.AES(key));
+                                final encrypted = encrypter.encrypt(subId, iv: iv);
+                                showDialog(context: context, builder: (ctx){
+                                  return ContentDialog(
+                                    title:  Text('Invite students to ${singleSubject['subjectName']}'),
+                                    content: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        QrImage(
+                                          data: encrypted.base64,
+                                          version: QrVersions.auto,
+                                          size: 200.0,
+                                        ),
+                                      ],
+                                    ),
+                                    actions: [
+                                      TextButton(child: const Text('Cancel'), onPressed: (){
+                                        Navigator.pop(context);
+                                      },),
+                                    ],
+                                  );
+                                });
+
+                              },
+                              child:const Text('Invite'),
+                            ),
+                          ],
                         ),
+
                       ],
                     ),
                   ),

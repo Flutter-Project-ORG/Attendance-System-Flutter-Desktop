@@ -41,10 +41,10 @@ class LectureModel {
     for (int i = 0; i <= numberOfDays; i++) {
       String currentDayName = DateFormat('EEEE').format(date).toLowerCase();
       if (days1.contains(currentDayName)) {
-        lectures.add(DateFormat('dd/MM/yyyy').format(date));
+        lectures.add(DateFormat('dd-MM-yyyy').format(date));
       }
       if (days2.contains(currentDayName)) {
-        lectures.add(DateFormat('dd/MM/yyyy').format(date));
+        lectures.add(DateFormat('dd-MM-yyyy').format(date));
       }
       date = date.add(const Duration(days: 1));
     }

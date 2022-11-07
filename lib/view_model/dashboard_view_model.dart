@@ -12,13 +12,12 @@ import '../res/contants.dart';
 import 'package:http/http.dart' as http;
 
 class DashboardViewModel with ChangeNotifier {
-
   bool _isLoadingLiveLecture = false;
-  String? _lectureInfo;
-  String? get lectureInfo => _lectureInfo;
+  final Map<String,dynamic> _lectureInfo = {};
+  Map<String,dynamic> get lectureInfo => _lectureInfo;
   bool get isLoadingLiveLecture => _isLoadingLiveLecture;
 
-  void _notify(){
+  void _notify() {
     _isLoadingLiveLecture = !_isLoadingLiveLecture;
     notifyListeners();
   }
@@ -26,12 +25,14 @@ class DashboardViewModel with ChangeNotifier {
   Future<void> getLiveSubject(BuildContext context) async {
     SubjectModel subjectModel = SubjectModel.instance;
     String insId =
-    Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;
+    Provider
+        .of<AuthViewModel>(context, listen: false)
+        .user!
+        .instructorId!;
     try {
       //_notify();
-      final Map<String, dynamic>? liveSubject =
-      await subjectModel.getLiveSubject(insId);
-      if (liveSubject == null) return null;
+      final Map<String, dynamic>? liveSubject = await subjectModel.getLiveSubject(insId);
+      if (liveSubject == null) return;
       final List<String> keys = liveSubject.keys.toList();
       for (int i = 0; i < keys.length; i++) {
         final value = liveSubject[keys[i]];
@@ -53,7 +54,10 @@ class DashboardViewModel with ChangeNotifier {
           DateTime end = DateTime.parse(
               '0000-00-00T${times['time1']['end'].toString().split('T')[1]}');
           if (currentTime.isAfter(start) && currentTime.isBefore(end)) {
-            _lectureInfo = DateFormat('dd/MM/yyyy').format(currentDate);
+            _lectureInfo['lecId'] = DateFormat('dd-MM-yyyy').format(currentDate);
+            _lectureInfo['subId'] = keys[i];
+            _lectureInfo['subName'] = value['subjectName'];
+            _lectureInfo['insId'] = Provider.of<AuthViewModel>(context,listen: false).user!.instructorId!;
             break;
           }
         }
@@ -69,7 +73,10 @@ class DashboardViewModel with ChangeNotifier {
             DateTime end = DateTime.parse(
                 '0000-00-00T${times['time2']['end'].toString().split('T')[1]}');
             if (currentTime.isAfter(start) && currentTime.isBefore(end)) {
-              _lectureInfo = DateFormat('dd/MM/yyyy').format(currentDate);
+              _lectureInfo['lecId'] = DateFormat('dd-MM-yyyy').format(currentDate);
+              _lectureInfo['subId'] = keys[i];
+              _lectureInfo['subName'] = value['subjectName'];
+              _lectureInfo['insId'] = Provider.of<AuthViewModel>(context,listen: false).user!.instructorId!;
               break;
             }
           }
@@ -81,4 +88,5 @@ class DashboardViewModel with ChangeNotifier {
           context, const Snackbar(content: Text('Something went wrong!')));
     }
   }
+
 }

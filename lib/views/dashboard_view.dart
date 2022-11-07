@@ -1,7 +1,7 @@
 import 'package:attendance_system_flutter_desktop/view_model/dashboard_view_model.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
-
+import '../widgets/live_lecture.dart';
 class DashboardView extends StatefulWidget {
   const DashboardView({Key? key}) : super(key: key);
 
@@ -10,10 +10,9 @@ class DashboardView extends StatefulWidget {
 }
 
 class _DashboardViewState extends State<DashboardView> {
-
   @override
   Widget build(BuildContext context) {
-    final dashProvider = Provider.of<DashboardViewModel>(context, listen: false);
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ScaffoldPage(
@@ -22,7 +21,7 @@ class _DashboardViewState extends State<DashboardView> {
         ),
         content: Column(
           children: [
-            Row(
+            Expanded(child: Row(
               children: const [
                 Expanded(
                   flex: 2,
@@ -43,35 +42,18 @@ class _DashboardViewState extends State<DashboardView> {
                   ),
                 ),
               ],
-            ),
-            Row(
+            ),),
+            Expanded(child: Row(
               children: [
-                Expanded(
-                  flex: 2,
-                  child: FutureBuilder(
-                    future: _getLiveLecture,
-                    builder: (context, snapshot) {
-                      if (dashProvider.isLoadingLiveLecture) {
-                        return const Center(
-                          child: ProgressRing(),
-                        );
-                      }
-                      return Card(
-                        child: dashProvider.lectureInfo != null
-                            ? Text(dashProvider.lectureInfo!)
-                            : Text("No Live"),
-                      );
-                    },
-                  ),
-                ),
-                Expanded(
+                LiveLecture(),
+                const Expanded(
                   flex: 1,
                   child: Card(
                     child: Text('Card 2'),
                   ),
                 ),
               ],
-            ),
+            ),),
           ],
         ),
       ),
