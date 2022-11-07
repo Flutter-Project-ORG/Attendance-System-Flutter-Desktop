@@ -15,7 +15,7 @@ import './views/splash_view.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
-
+import './external_providers/attendance_qr_provider.dart';
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
@@ -50,6 +50,9 @@ Future main() async {
         ),
         ChangeNotifierProvider(
           create: (_) => LecturesAttendanceViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => AttendanceQrProvider(),
         ),
       ],
       child: const MyApp(),

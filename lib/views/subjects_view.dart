@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:attendance_system_flutter_desktop/res/contants.dart';
+import 'package:attendance_system_flutter_desktop/widgets/subject_days.dart';
 import 'package:flutter/material.dart' as material;
 
 import 'package:attendance_system_flutter_desktop/view_model/subjects_view_model.dart';
@@ -19,11 +20,12 @@ class SubjectsView extends StatefulWidget {
 
 class _SubjectsViewState extends State<SubjectsView> {
   final SubjectsViewModel _viewModel = SubjectsViewModel();
-  
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Provider.of<SubjectsViewModel>(context, listen: false).getSubjectsByInstructorId(context);
+      await Provider.of<SubjectsViewModel>(context, listen: false)
+          .getSubjectsByInstructorId(context);
     });
     super.initState();
   }
@@ -50,75 +52,169 @@ class _SubjectsViewState extends State<SubjectsView> {
             child: GridView.builder(
               itemCount: provider.subjects.length,
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 240.0,
+                maxCrossAxisExtent: 300.0,
                 mainAxisSpacing: 16.0,
                 crossAxisSpacing: 16.0,
               ),
               itemBuilder: (BuildContext context, int index) {
-                Map<String, dynamic> singleSubject = provider.subjects[keyList[index]];
+                Map<String, dynamic> singleSubject =
+                    provider.subjects[keyList[index]];
                 return GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, LecturesView.routeName, arguments: {
-                      "subName" : singleSubject['subjectName'],
-                      "subId" : keyList[index],
-                    });
+                    Navigator.pushNamed(context, LecturesView.routeName,
+                        arguments: {
+                          "subName": singleSubject['subjectName'],
+                          "subId": keyList[index],
+                        });
                   },
                   child: Card(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(singleSubject['subjectName']),
-                        const Spacer(),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(singleSubject['subjectName']),
+                                  Container(
+                                    padding: const EdgeInsets.all(8.0),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50),
+                                      color: Colors.grey,
+                                    ),
+                                    child: Text(
+                                      "Ends in : ${singleSubject['endDate'].toString().substring(0, 10)}",
+                                      style: const TextStyle(
+                                          fontSize: 10, color: Colors.white),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              SubjectDays(
+                                singleSubject['times']['time1']['days'],
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text("Time"),
+                                  Text(
+                                    "${singleSubject['times']['time1']['start'].toString().substring(11, 16)} - ${singleSubject['times']['time1']['end'].toString().substring(11, 16)}",
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.grey.withOpacity(0.5),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              if (singleSubject['times']['time2'] != null)
+                                const SizedBox(
+                                  height: 15,
+                                  child: Center(
+                                    child: Divider(),
+                                  ),
+                                ),
+                              if (singleSubject['times']['time2'] != null)
+                                SubjectDays(
+                                  singleSubject['times']['time2']['days'],
+                                ),
+                              if (singleSubject['times']['time2'] != null)
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                              if (singleSubject['times']['time2'] != null)
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text("Time"),
+                                    Text(
+                                      "${singleSubject['times']['time2']['start'].toString().substring(11, 16)} - ${singleSubject['times']['time1']['end'].toString().substring(11, 16)}",
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.grey.withOpacity(0.5),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                            ],
+                          ),
+                        ),
+                        //const Spacer(),
                         Row(
                           children: [
                             FilledButton(
                               style: ButtonStyle(
-                                backgroundColor: ButtonState.all<Color>(Colors.red),
-                                foregroundColor: ButtonState.all<Color>(Colors.white),
+                                backgroundColor:
+                                    ButtonState.all<Color>(Colors.red),
+                                foregroundColor:
+                                    ButtonState.all<Color>(Colors.white),
                               ),
                               onPressed: () {
-                                provider.deleteSubject(context, keyList[index], singleSubject['subjectName']);
+                                provider.deleteSubject(context, keyList[index],
+                                    singleSubject['subjectName']);
                               },
-                              child:const Text('Delete'),
+                              child: const Text('Delete'),
                             ),
-                            const SizedBox(width: 32.0,),
+                            const SizedBox(
+                              width: 32.0,
+                            ),
                             FilledButton(
                               style: ButtonStyle(
-                                foregroundColor: ButtonState.all<Color>(Colors.white),
+                                foregroundColor:
+                                    ButtonState.all<Color>(Colors.white),
                               ),
                               onPressed: () {
                                 final subId = keyList[index];
-                                final key = encrypt.Key.fromUtf8(Constants.encryptKey);
+                                final key =
+                                    encrypt.Key.fromUtf8(Constants.encryptKey);
                                 final iv = encrypt.IV.fromLength(16);
-                                final encrypter = encrypt.Encrypter(encrypt.AES(key));
-                                final encrypted = encrypter.encrypt(subId, iv: iv);
-                                showDialog(context: context, builder: (ctx){
-                                  return ContentDialog(
-                                    title:  Text('Invite students to ${singleSubject['subjectName']}'),
-                                    content: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        QrImage(
-                                          data: encrypted.base64,
-                                          version: QrVersions.auto,
-                                          size: 200.0,
+                                final encrypter =
+                                    encrypt.Encrypter(encrypt.AES(key));
+                                final encrypted =
+                                    encrypter.encrypt(subId, iv: iv);
+                                showDialog(
+                                    context: context,
+                                    builder: (ctx) {
+                                      return ContentDialog(
+                                        title: Text(
+                                            'Invite students to ${singleSubject['subjectName']}'),
+                                        content: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            QrImage(
+                                              data: encrypted.base64,
+                                              version: QrVersions.auto,
+                                              size: 200.0,
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                    actions: [
-                                      TextButton(child: const Text('Cancel'), onPressed: (){
-                                        Navigator.pop(context);
-                                      },),
-                                    ],
-                                  );
-                                });
-
+                                        actions: [
+                                          TextButton(
+                                            child: const Text('Cancel'),
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    });
                               },
-                              child:const Text('Invite'),
+                              child: const Text('Invite'),
                             ),
                           ],
                         ),
-
                       ],
                     ),
                   ),
