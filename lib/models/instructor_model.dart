@@ -3,10 +3,11 @@ import 'dart:convert';
 import '../res/contants.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class InstructorModel {
-
   InstructorModel._();
+
   static final instance = InstructorModel._();
 
   String? instructorId;
@@ -22,28 +23,6 @@ class InstructorModel {
   });
 
 
-  Map<String, dynamic> toJson() {
-    return {
-      'userId': instructorId,
-      'username': username,
-      'email': email,
-      'imageUrl': imageUrl,
-    };
-  }
-
-  factory InstructorModel.fromJson(Map<String, dynamic> json) {
-    return InstructorModel(
-      instructorId: json['userId'] as String,
-      username: json['username'] as String,
-      email: json['email'] as String,
-      imageUrl: json['imageUrl'] as String,
-    );
-  }
-
-  @override
-  String toString() {
-    return 'InstructorModel{userId: $instructorId, username: $username, email: $email, imageUrl: $imageUrl}';
-  }
 
   Future<InstructorModel> authenticate(
       {required String email, required String password, String? username, bool isLogin = false}) async {
@@ -58,7 +37,6 @@ class InstructorModel {
       if (authResData['error'] != null) {
         throw authResData['error']['message'];
       }
-
       String userId = authResData['localId'];
       Uri dbUrl = Uri.parse("${Constants.realtimeUrl}/instructors/$userId.json");
       http.Response dbRes;
@@ -76,15 +54,21 @@ class InstructorModel {
       if (dbResData['error'] != null) {
         throw "Something went wrong!";
       }
-      return InstructorModel(
+      InstructorModel instructor = InstructorModel(
         instructorId: userId,
         username: dbResData['username'],
         email: dbResData['email'],
         imageUrl: dbResData['imageUrl'],
       );
+      await _saveAuthData(instructor);
+      return instructor;
     } catch (e) {
       rethrow;
     }
+  }
+
+  Future<void> logOut() async {
+    await _removeAuthData();
   }
 
   Future<void> restPassword(String email) async {
@@ -101,5 +85,45 @@ class InstructorModel {
     } catch (e) {
       rethrow;
     }
+  }
+
+  Future<void> _saveAuthData(InstructorModel instructorModel) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic> authData = instructorModel.toJson();
+    await prefs.setString('authData', jsonEncode(authData));
+  }
+
+  Future<void> _removeAuthData() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    if(prefs.containsKey('authData')){
+      await prefs.remove('authData');
+    }
+  }
+
+  Future<InstructorModel?> getAuthData() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    if(prefs.containsKey('authData')){
+      InstructorModel instructorModel = InstructorModel.fromJson(jsonDecode(prefs.getString('authData')!) as Map<String, dynamic>);
+      return instructorModel;
+    }
+   return null;
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'instructorId': instructorId,
+      'username': username,
+      'email': email,
+      'imageUrl': imageUrl,
+    };
+  }
+
+  factory InstructorModel.fromJson(Map<String, dynamic> map) {
+    return InstructorModel(
+      instructorId: map['instructorId'] as String?,
+      username: map['username'] as String?,
+      email: map['email'] as String?,
+      imageUrl: map['imageUrl'] as String?,
+    );
   }
 }

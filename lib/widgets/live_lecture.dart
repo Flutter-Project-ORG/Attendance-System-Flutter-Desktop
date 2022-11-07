@@ -14,9 +14,11 @@ class LiveLecture extends StatefulWidget {
 class _LiveLectureState extends State<LiveLecture> {
   late Future _getLiveLecture;
 
+  final DashboardViewModel _viewModel = DashboardViewModel();
+
   @override
   void initState() {
-    _getLiveLecture = Provider.of<DashboardViewModel>(context, listen: false).getLiveSubject(context);
+    _getLiveLecture = _viewModel.getLiveSubject(context);
     super.initState();
   }
   @override
@@ -42,7 +44,7 @@ class _LiveLectureState extends State<LiveLecture> {
                       subtitle: Text(dashProvider.lectureInfo['subName']),
                       trailing: FilledButton(
                         onPressed: (){
-                          Provider.of<LecturesAttendanceViewModel>(context,listen: false).addAttendanceList('-NGCWdgPMr1WisS5bogQ', dashProvider.lectureInfo['lecId'],context);
+                          Provider.of<LecturesAttendanceViewModel>(context,listen: false).addAttendanceList(dashProvider.lectureInfo['subId'], dashProvider.lectureInfo['lecId'],context);
                         },
                         child: const Text('Take Attendance'),
                       ),
