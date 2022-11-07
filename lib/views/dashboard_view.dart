@@ -12,15 +12,8 @@ class DashboardView extends StatefulWidget {
 class _DashboardViewState extends State<DashboardView> {
 
   @override
-  void initState() {
-    print('initState');
-    super.initState();
-  }
-
-
-
-  @override
   Widget build(BuildContext context) {
+    final dashProvider = Provider.of<DashboardViewModel>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ScaffoldPage(
@@ -56,18 +49,16 @@ class _DashboardViewState extends State<DashboardView> {
                 Expanded(
                   flex: 2,
                   child: FutureBuilder(
-                    future:
-                        Provider.of<DashboardViewModel>(context, listen: false)
-                            .getLiveSubject(context),
+                    future: _getLiveLecture,
                     builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
+                      if (dashProvider.isLoadingLiveLecture) {
                         return const Center(
                           child: ProgressRing(),
                         );
                       }
                       return Card(
-                        child: snapshot.data != null
-                            ? Text('Card 2')
+                        child: dashProvider.lectureInfo != null
+                            ? Text(dashProvider.lectureInfo!)
                             : Text("No Live"),
                       );
                     },
