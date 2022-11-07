@@ -15,6 +15,15 @@ class LecturesAttendanceViewModel with ChangeNotifier {
 
   final LectureAttendanceModel _lectureAttendanceModel = LectureAttendanceModel.instance;
 
+  String? _user;
+
+
+  String? get user => _user;
+
+  set user(String? value) {
+    _user = value;
+  }
+
   Future getAttendanceByLectureIdAndSubjectId(String subId, String lecId, BuildContext ctx) async {
     final uid = Provider.of<AuthViewModel>(ctx, listen: false).user!.instructorId;
     _attendance.clear();
