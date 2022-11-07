@@ -30,7 +30,6 @@ class DashboardViewModel with ChangeNotifier {
         .user!
         .instructorId!;
     try {
-      //_notify();
       final Map<String, dynamic>? liveSubject = await subjectModel.getLiveSubject(insId);
       if (liveSubject == null) return;
       final List<String> keys = liveSubject.keys.toList();
@@ -64,7 +63,6 @@ class DashboardViewModel with ChangeNotifier {
 
         if (times['time2'] != null) {
           List days2 = times['time2']['days'];
-          // print(days2);
           if (days2.contains(currentDayName)) {
             DateTime currentTime = DateTime.parse(
                 '0000-00-00T${currentDate.toIso8601String().split('T')[1]}');
@@ -82,7 +80,6 @@ class DashboardViewModel with ChangeNotifier {
           }
         }
       }
-      //_notify();
     } catch (e) {
       showSnackbar(
           context, const Snackbar(content: Text('Something went wrong!')));

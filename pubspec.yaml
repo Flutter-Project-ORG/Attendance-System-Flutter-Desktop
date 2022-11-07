@@ -24,6 +24,8 @@ dependencies:
 
   window_manager: ^0.2.7
   encrypt: ^5.0.1
+  shared_preferences: ^2.0.15
+  progress_indicators: ^1.0.0
 
 
 
