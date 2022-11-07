@@ -17,7 +17,6 @@ class LecturesAttendanceViewModel with ChangeNotifier {
 
   String? _user;
 
-
   String? get user => _user;
 
   set user(String? value) {
@@ -46,13 +45,21 @@ class LecturesAttendanceViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-
-  Future addAttendanceList(String subId,String lecId,BuildContext context)async{
-    String insId = Provider.of<AuthViewModel>(context,listen: false).user!.instructorId!;
-    try{
+  Future addAttendanceList(String subId, String lecId, BuildContext context) async {
+    String insId = Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;
+    try {
       await _lectureAttendanceModel.addAttendanceList(subId, lecId, insId);
-    }catch(e){
-      showSnackbar(context, const Snackbar(content: Text('Something went wrong!')));
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future changeStudentAttendanceState(bool isAttend, Map<String, dynamic> data, BuildContext context) async {
+    try {
+      final insId = Provider.of<AuthViewModel>(context, listen: false).user!.instructorId;
+      await _lectureAttendanceModel.changeStudentAttendanceState(isAttend, insId!, data);
+    } catch (err) {
+      rethrow;
     }
   }
 }
