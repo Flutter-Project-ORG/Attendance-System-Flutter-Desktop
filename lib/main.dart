@@ -10,7 +10,7 @@ import 'views/home_view.dart';
 import 'views/auth_view.dart';
 import 'views/lectures_view.dart';
 import 'views/lecture_attendance_view.dart';
-import './views/splash.dart';
+import './views/splash_view.dart';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
@@ -73,14 +73,15 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         brightness: Brightness.dark,
       ),
-      initialRoute: AuthView.routeName,
+      initialRoute: SplashView.routeName,
+      // initialRoute: AuthView.routeName,
       // initialRoute: HomeView.routeName,
       routes: {
         AuthView.routeName: (_) => AuthView(),
         HomeView.routeName: (_) => const HomeView(),
         LecturesView.routeName: (_) => const LecturesView(),
         LectureAttendanceView.routeName : (_) => const LectureAttendanceView(),
-        Splash.routeName :(_) => const Splash(),
+        SplashView.routeName :(_) => const SplashView(),
       },
     );
   }

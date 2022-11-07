@@ -13,16 +13,16 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<HomeViewModel>(
-      builder: (BuildContext context, HomeViewModel provider, _) {
+      builder: (BuildContext context, HomeViewModel homeProvider, _) {
         return NavigationView(
           appBar: const NavigationAppBar(
             automaticallyImplyLeading: false,
             title: Text("Home"),
           ),
           pane: NavigationPane(
-            selected: provider.pageIndex,
+            selected: homeProvider.pageIndex,
             onChanged: (int value) {
-              provider.setPageIndex = value;
+              homeProvider.setPageIndex = value;
             },
             displayMode: PaneDisplayMode.auto,
             items: [
@@ -38,7 +38,8 @@ class HomeView extends StatelessWidget {
               ),
               PaneItem(
                 onTap: () {
-                  provider.setPageIndex = 0;
+                  homeProvider.setPageIndex = 0;
+                  homeProvider.logOut();
                   Navigator.pushReplacementNamed(context, AuthView.routeName);
                 },
                 icon: FaIcon(

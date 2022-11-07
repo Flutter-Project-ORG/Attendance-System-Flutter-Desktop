@@ -1,6 +1,7 @@
 import 'dart:convert';
 import '../models/subject_model.dart';
 import '../models/lecture_model.dart';
+import '../models/lecture_attendance_model.dart';
 import 'auth_view_model.dart';
 
 import 'package:fluent_ui/fluent_ui.dart';
@@ -10,6 +11,7 @@ import 'package:http/http.dart' as http;
 class SubjectsViewModel with ChangeNotifier {
   SubjectModel subjectModel = SubjectModel.instance;
   LectureModel lectureModel = LectureModel.instance;
+  LectureAttendanceModel lectureAttendanceModel = LectureAttendanceModel.instance;
 
   Future<void> addSubject(BuildContext context) async {
     Map<String, dynamic> subjectInfo = {};
@@ -318,12 +320,11 @@ class SubjectsViewModel with ChangeNotifier {
               onPressed: () async {
                 String instructorId = Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;
                 try {
-                  await subjectModel.deleteSubject(subjectId, instructorId).then((_) async {
-                    await lectureModel.deleteLecturesBySubject(subjectId, instructorId).then((_) async{
-                      Navigator.pop(context);
-                      await Provider.of<SubjectsViewModel>(context, listen: false).getSubjectsByInstructorId(context);
-                    });
-                  });
+                  await subjectModel.deleteSubject(subjectId, instructorId);
+                  await lectureModel.deleteLecturesBySubject(subjectId, instructorId);
+                  await lectureAttendanceModel.deleteAttendanceBySubject(subjectId, instructorId);
+                  Navigator.pop(context);
+                  await Provider.of<SubjectsViewModel>(context, listen: false).getSubjectsByInstructorId(context);
                 } catch (e) {
                   showSnackbar(context, const Snackbar(content: Text('Something went wrong. Try again.')));
                 }

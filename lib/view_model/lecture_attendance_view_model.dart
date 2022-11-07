@@ -13,11 +13,13 @@ class LecturesAttendanceViewModel with ChangeNotifier {
 
   Map<String, dynamic> get attendance => _attendance;
 
+  final LectureAttendanceModel _lectureAttendanceModel = LectureAttendanceModel.instance;
+
   Future getAttendanceByLectureIdAndSubjectId(String subId, String lecId, BuildContext ctx) async {
     final uid = Provider.of<AuthViewModel>(ctx, listen: false).user!.instructorId;
     _attendance.clear();
     try {
-      final response = await LectureAttendanceModel.getAttendanceBySubjectIdAndLectureId(subId, lecId, uid!);
+      final response = await _lectureAttendanceModel.getAttendanceBySubjectIdAndLectureId(subId, lecId, uid!);
       _filterSearch.clear();
       _attendance = json.decode(response.body) as Map<String, dynamic>;
       _filterSearch = json.decode(response.body) as Map<String, dynamic>;
@@ -38,8 +40,10 @@ class LecturesAttendanceViewModel with ChangeNotifier {
 
   Future addAttendanceList(String subId,String lecId,BuildContext context)async{
     String insId = Provider.of<AuthViewModel>(context,listen: false).user!.instructorId!;
-    await LectureAttendanceModel.addAttendanceList(subId, lecId, insId);
+    try{
+      await _lectureAttendanceModel.addAttendanceList(subId, lecId, insId);
+    }catch(e){
+      showSnackbar(context, const Snackbar(content: Text('Something went wrong!')));
+    }
   }
-
-
 }

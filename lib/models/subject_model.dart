@@ -62,6 +62,8 @@ class SubjectModel {
     try {
       Uri url = Uri.parse('${Constants.realtimeUrl}/subjects/$instructorId/$subjectId.json');
       await http.delete(url);
+      url = Uri.parse('${Constants.realtimeUrl}/subjects-students/$instructorId/$subjectId.json');
+      await http.delete(url);
     } catch (e) {
       rethrow;
     }
