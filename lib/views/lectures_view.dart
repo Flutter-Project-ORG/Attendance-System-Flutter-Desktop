@@ -52,6 +52,7 @@ class _LecturesViewState extends State<LecturesView> {
                   Navigator.pushNamed(context, LectureAttendanceView.routeName,arguments: {
                     "lecId" : lectures[index],
                     "subId" : subject['subId'],
+                    "subName" : subject['subName']
                   });
                 },
                 child: Card(

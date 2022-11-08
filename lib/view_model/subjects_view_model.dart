@@ -7,7 +7,7 @@ import 'auth_view_model.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
-
+import './dashboard_view_model.dart';
 class SubjectsViewModel with ChangeNotifier {
   SubjectModel subjectModel = SubjectModel.instance;
   LectureModel lectureModel = LectureModel.instance;
@@ -287,12 +287,13 @@ class SubjectsViewModel with ChangeNotifier {
             FilledButton(
               child: const Text('Yes'),
               onPressed: () async {
+                
                 String instructorId = Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;
                 try {
                   await subjectModel.deleteSubject(subjectId, instructorId);
                   await lectureModel.deleteLecturesBySubject(subjectId, instructorId);
                   await lectureAttendanceModel.deleteAttendanceBySubject(subjectId, instructorId);
-                  
+                  Provider.of<DashboardViewModel>(context,listen: false).clearLectureInfo();
                   Navigator.pop(context);
                   await Provider.of<SubjectsViewModel>(context, listen: false).getSubjectsByInstructorId(context);
                 } catch (e) {
@@ -317,5 +318,15 @@ class SubjectsViewModel with ChangeNotifier {
     subjects = jsonDecode(res.body) ?? <String, dynamic>{};
     isLoading = false;
     notifyListeners();
+  }
+
+  Future getSubjectAttendance(String subId,BuildContext context) async {
+    try{ 
+      final String insId = Provider.of<AuthViewModel>(context,listen: false).user!.instructorId!;
+      final response = await SubjectModel.instance.getSubjectAttendance(subId, insId);
+      return jsonDecode(response.body) as Map<String,dynamic>?;
+    }catch(err){
+
+    }
   }
 }
