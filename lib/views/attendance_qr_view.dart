@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:attendance_system_flutter_desktop/view_model/lecture_attendance_view_model.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -11,7 +12,9 @@ import '../view_model/attendance_qr_view_model.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 
 class AttendanceQrView extends StatefulWidget {
-  const AttendanceQrView({Key? key, required this.path, required this.lecId, required this.ctx}) : super(key: key);
+  const AttendanceQrView(
+      {Key? key, required this.path, required this.lecId, required this.ctx})
+      : super(key: key);
 
   final String path;
   final String lecId;
@@ -36,28 +39,33 @@ class _AttendanceQrViewState extends State<AttendanceQrView> {
     iv = encrypt.IV.fromLength(16);
     encrypter = encrypt.Encrypter(encrypt.AES(key));
     countDuration = const Duration(minutes: 5);
-    countTimer = Timer.periodic(const Duration(seconds: 1), (_) async{
-      const reduceSecondsBy = 1;
-      setState(() {
-        final seconds = countDuration.inSeconds - reduceSecondsBy;
-        if (seconds < 0) {
-          Navigator.pop(context);
-        } else {
-          countDuration = Duration(seconds: seconds);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      countTimer = Timer.periodic(const Duration(seconds: 1), (_) async {
+        const reduceSecondsBy = 1;
+        if (mounted) {
+          setState(() {
+            final seconds = countDuration.inSeconds - reduceSecondsBy;
+            if (seconds < 0) {
+              endTakingAttendance().then((value) => Navigator.pop(context));
+            } else {
+              countDuration = Duration(seconds: seconds);
+            }
+          });
         }
       });
-    });
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Provider.of<AttendanceQrViewModel>(widget.ctx, listen: false).changeRandomNum(widget.lecId);
+      await Provider.of<AttendanceQrViewModel>(widget.ctx, listen: false)
+          .changeRandomNum(widget.lecId);
       timer = Timer.periodic(
         const Duration(seconds: 10),
         (_) async {
-          await Provider.of<AttendanceQrViewModel>(widget.ctx, listen: false).changeRandomNum(widget.lecId);
+          await Provider.of<AttendanceQrViewModel>(widget.ctx, listen: false)
+              .changeRandomNum(widget.lecId);
         },
       );
       initSize = await windowManager.getSize();
       await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
-      await windowManager.setAsFrameless();
+      //await windowManager.setAsFrameless();
       await windowManager.setAlwaysOnTop(true);
       await windowManager.setMinimumSize(const Size(300, 300));
       await windowManager.setPosition(const Offset(0, 0));
@@ -78,9 +86,14 @@ class _AttendanceQrViewState extends State<AttendanceQrView> {
     Size size = await windowManager.getSize();
     await windowManager.setTitleBarStyle(TitleBarStyle.normal);
     await windowManager.setAlwaysOnTop(false);
+<<<<<<< HEAD
     await windowManager.setMinimumSize(Size(540.0, size.height * 0.90));
+=======
+>>>>>>> fbc2b1755612b26808387224a7163c3b6701f9c1
     await windowManager.setSize(initSize);
-    windowManager.show();
+    await windowManager.setMinimumSize(Size(540.0, size.height * 0.90));
+
+    //windowManager.show();
     timer.cancel();
     countTimer.cancel();
   }
@@ -95,35 +108,45 @@ class _AttendanceQrViewState extends State<AttendanceQrView> {
         child: Text('$minutes:$seconds'),
       ),
       content: Center(
-        child: Column(
-          children: [
-            const Text('Scan To Attend'),
-            const SizedBox(height: 16.0,),
-            Consumer<AttendanceQrViewModel>(
-              builder: (ctx, qrProvider, _) {
-                Map<String, String> data = {
-                  "path": widget.path,
-                  "randomNum": qrProvider.randomNum.toString(),
-                  "lecId": widget.lecId,
-                };
-                final encrypted = encrypter.encrypt(jsonEncode(data), iv: iv);
-                return QrImage(
-                  backgroundColor: Colors.white,
-                  data: encrypted.base64,
-                  version: QrVersions.auto,
-                  size: 160.0,
-                );
-              },
-            ),
-            const SizedBox(height: 16.0,),
-            FilledButton(
-              child: const Text('Exit'),
-              onPressed: () async {
-                await Provider.of<AttendanceQrViewModel>(widget.ctx, listen: false).deleteRandomFromDB(widget.lecId);
-                Navigator.pop(context);
-              },
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const Text('Scan To Attend'),
+              const SizedBox(
+                height: 16.0,
+              ),
+              Consumer<AttendanceQrViewModel>(
+                builder: (ctx, qrProvider, _) {
+                  Map<String, String> data = {
+                    "path": widget.path,
+                    "randomNum": qrProvider.randomNum.toString(),
+                    "lecId": widget.lecId,
+                  };
+                  final encrypted = encrypter.encrypt(jsonEncode(data), iv: iv);
+                  return QrImage(
+                    backgroundColor: Colors.white,
+                    data: encrypted.base64,
+                    version: QrVersions.auto,
+                    size: 160.0,
+                  );
+                },
+              ),
+              const SizedBox(
+                height: 16.0,
+              ),
+              FilledButton(
+                child: const Text('Exit'),
+                onPressed: () async {
+                  await Provider.of<AttendanceQrViewModel>(widget.ctx,
+                          listen: false)
+                      .deleteRandomFromDB(widget.lecId);
+                  endTakingAttendance().then(
+                    (value) => Navigator.pop(context),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

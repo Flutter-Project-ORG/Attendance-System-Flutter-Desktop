@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:attendance_system_flutter_desktop/res/contants.dart';
 import 'package:attendance_system_flutter_desktop/views/auth_view.dart';
 import 'package:attendance_system_flutter_desktop/widgets/subject_days.dart';
@@ -6,12 +7,17 @@ import 'package:flutter/material.dart' as material;
 
 import 'package:attendance_system_flutter_desktop/view_model/subjects_view_model.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/services.dart';
 
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../view_model/auth_view_model.dart';
 import 'lectures_view.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+
+import 'package:path_provider/path_provider.dart' as path_provider;
 
 class SubjectsView extends StatefulWidget {
   const SubjectsView({Key? key}) : super(key: key);
@@ -153,7 +159,7 @@ class _SubjectsViewState extends State<SubjectsView> {
                           ),
                         ),
                         //const Spacer(),
-                        Row(
+                        Wrap(
                           children: [
                             FilledButton(
                               style: ButtonStyle(
@@ -168,19 +174,21 @@ class _SubjectsViewState extends State<SubjectsView> {
                               },
                               child: const Text('Delete'),
                             ),
-                            const SizedBox(
-                              width: 32.0,
-                            ),
+                            
                             FilledButton(
                               style: ButtonStyle(
                                 foregroundColor:
                                     ButtonState.all<Color>(Colors.white),
                               ),
                               onPressed: () {
-                                Map<String,dynamic> data = {
-                                  'subId':keyList[index],
-                                  'insId':Provider.of<AuthViewModel>(context,listen: false).user!.instructorId!,
+                                Map<String, dynamic> data = {
+                                  'subId': keyList[index],
+                                  'insId': Provider.of<AuthViewModel>(context,
+                                          listen: false)
+                                      .user!
+                                      .instructorId!,
                                 };
+
                                 final key =
                                     encrypt.Key.fromUtf8(Constants.encryptKey);
                                 final iv = encrypt.IV.fromLength(16);
@@ -198,7 +206,8 @@ class _SubjectsViewState extends State<SubjectsView> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
-                                            QrImage(backgroundColor: Colors.white,
+                                            QrImage(
+                                              backgroundColor: Colors.white,
                                               data: encrypted.base64,
                                               version: QrVersions.auto,
                                               size: 200.0,
@@ -217,6 +226,112 @@ class _SubjectsViewState extends State<SubjectsView> {
                                     });
                               },
                               child: const Text('Invite'),
+                            ),
+                            
+                            FilledButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    ButtonState.all<Color>(Colors.black),
+                                foregroundColor:
+                                    ButtonState.all<Color>(Colors.white),
+                              ),
+                              onPressed: () async {
+                                final Map<String, dynamic>? att =
+                                    await SubjectsViewModel()
+                                        .getSubjectAttendance(
+                                  keyList[index],
+                                  context,
+                                );
+                                if (att == null) return;
+                                print(att);
+
+                                final pdf = pw.Document();
+                                final font = await rootBundle
+                                    .load("assets/fonts/OpenSans-Regular.ttf");
+                                final ttf = pw.Font.ttf(font);
+
+                                att.forEach((key, value) {
+                                  final List studentIds = att[key].keys.toList();
+                                  pdf.addPage(
+                                    pw.Page(
+                                        pageFormat: PdfPageFormat.a4,
+                                        build: (pw.Context context) {
+                                          return pw.Column(
+                                            crossAxisAlignment:
+                                                pw.CrossAxisAlignment.start,
+                                            children: [
+                                              pw.Align(
+                                                alignment:pw.Alignment.center,
+                                                child: pw.Text(singleSubject['subjectName']),
+                                              ),
+                                              pw.Text(key),
+                                              pw.Divider(),
+                                              pw.Row(
+                                                    children: [
+                                                      pw.Expanded(
+                                                        child: pw.Text(
+                                                          "Student name",
+                                                        ),
+                                                      ),
+                                                      pw.Expanded(
+                                                        child: pw.Text(
+                                                          "Attendance",
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                              pw.ListView.separated(
+                                                itemCount: studentIds.length,
+                                                separatorBuilder:
+                                                    (context, index) =>
+                                                        pw.Divider(),
+                                                itemBuilder: (context, index) {
+                                                  Map<String, dynamic>
+                                                      singleStudent = att[key]
+                                                          [studentIds[index]];
+                                                  return pw.Row(
+                                                    children: [
+                                                      pw.Expanded(
+                                                        child: pw.Text(
+                                                          singleStudent['studentName'],
+                                                        ),
+                                                      ),
+                                                      pw.Expanded(
+                                                        child: pw.Text(
+                                                          singleStudent['isAttend'] == true ? 'Attend' : 'Absent',
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        }),
+                                  );
+                                });
+
+                                Directory? output =
+                                    await path_provider.getDownloadsDirectory();
+                                output ??=
+                                    await path_provider.getTemporaryDirectory();
+                                final file = File(
+                                    "${output.path}/${singleSubject['subjectName']}.pdf");
+                                await file
+                                    .writeAsBytes(await pdf.save())
+                                    .then((value) {
+                                  showSnackbar(
+                                    context,
+                                    Snackbar(
+                                      content: Text(
+                                        'File download to ${value.path}',
+                                      ),
+                                      extended: true,
+                                    ),
+                                  );
+                                });
+                              },
+                              child: const Text('Print'),
                             ),
                           ],
                         ),

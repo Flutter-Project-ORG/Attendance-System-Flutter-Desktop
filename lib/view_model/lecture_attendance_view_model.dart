@@ -23,6 +23,8 @@ class LecturesAttendanceViewModel with ChangeNotifier {
     _user = value;
   }
 
+  bool fetchLiveAttendance = false;
+
   Future getAttendanceByLectureIdAndSubjectId(String subId, String lecId, BuildContext ctx) async {
     final uid = Provider.of<AuthViewModel>(ctx, listen: false).user!.instructorId;
     _attendance.clear();
@@ -31,6 +33,7 @@ class LecturesAttendanceViewModel with ChangeNotifier {
       _filterSearch.clear();
       _attendance = json.decode(response.body) as Map<String, dynamic>;
       _filterSearch = json.decode(response.body) as Map<String, dynamic>;
+      fetchLiveAttendance = true;
     } catch (err) {
       throw err;
     }

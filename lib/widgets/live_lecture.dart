@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:attendance_system_flutter_desktop/view_model/auth_view_model.dart';
+import 'package:attendance_system_flutter_desktop/widgets/live_lecture_attendance.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 
@@ -59,7 +60,7 @@ class _LiveLectureState extends State<LiveLecture> {
                       subtitle: Text(dashProvider.lectureInfo['subName']),
                       trailing: FilledButton(
                         onPressed: () async {
-                          try{
+                          try {
                             await Provider.of<LecturesAttendanceViewModel>(
                               context,
                               listen: false,
@@ -68,29 +69,37 @@ class _LiveLectureState extends State<LiveLecture> {
                               dashProvider.lectureInfo['lecId'],
                               context,
                             );
-                            final String insId =
-                            Provider.of<AuthViewModel>(context, listen: false)
-                                .user!
-                                .instructorId!;
+                            final String insId = Provider.of<AuthViewModel>(
+                              context,
+                              listen: false,
+                            ).user!.instructorId!;
+                            Provider.of<LecturesAttendanceViewModel>(context,listen: false).fetchLiveAttendance = false;
                             Navigator.push(
                                 context,
                                 FluentPageRoute(
                                     builder: (_) => AttendanceQrView(
-                                      path: "$insId/${dashProvider.lectureInfo['subId']}/${dashProvider.lectureInfo['lecId']}",
-                                      lecId: dashProvider.lectureInfo['lecId'],
-                                      ctx: context,
-                                    )));
+                                          path:
+                                              "$insId/${dashProvider.lectureInfo['subId']}/${dashProvider.lectureInfo['lecId']}",
+                                          lecId:
+                                              dashProvider.lectureInfo['lecId'],
+                                          ctx: context,
+                                        )));
                             // dashProvider.showAttendanceQr(
                             //   context,
                             //   "$insId/${dashProvider.lectureInfo['subId']}/${dashProvider.lectureInfo['lecId']}",
                             //   dashProvider.lectureInfo['lecId'],
                             // );
-                          }catch(e){
-                            if(e.toString() == 'There is no students for that subject.'){
-                              showSnackbar(context,  Snackbar(content: Text(e.toString())));
+                          } catch (e) {
+                            if (e.toString() ==
+                                'There is no students for that subject.') {
+                              showSnackbar(context,
+                                  Snackbar(content: Text(e.toString())));
                               return;
                             }
-                            showSnackbar(context, const Snackbar(content: Text('Something went wrong!')));
+                            showSnackbar(
+                                context,
+                                const Snackbar(
+                                    content: Text('Something went wrong!')));
                           }
                         },
                         child: const Text('Take Attendance'),
@@ -102,16 +111,9 @@ class _LiveLectureState extends State<LiveLecture> {
                         child: Divider(),
                       ),
                     ),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: 10,
-                        itemBuilder: (context, int index) {
-                          return Container(
-                            height: 40,
-                            color: Colors.red,
-                          );
-                        },
-                      ),
+                    LiveLectureAttendance(
+                      lecId: dashProvider.lectureInfo['lecId'],
+                      subId: dashProvider.lectureInfo['subId'],
                     ),
                   ],
                 );

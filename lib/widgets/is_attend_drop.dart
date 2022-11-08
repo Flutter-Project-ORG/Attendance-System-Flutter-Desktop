@@ -27,20 +27,18 @@ class _IsAttendDropState extends State<IsAttendDrop> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: DropDownButton(
-        title: Text(widget._isAttend ? "Attend" : "Absent"),
-        items: [
-          MenuFlyoutItem(
-            text: const Text('Attend'),
-            onPressed: () => _changeState(true),
-          ),
-          MenuFlyoutItem(
-            text: const Text('Absent'),
-            onPressed: () => _changeState(false),
-          ),
-        ],
-      ),
+    return DropDownButton(
+      title: Text(widget._isAttend ? "Attend" : "Absent"),
+      items: [
+        MenuFlyoutItem(
+          text: const Text('Attend'),
+          onPressed: () => _changeState(true),
+        ),
+        MenuFlyoutItem(
+          text: const Text('Absent'),
+          onPressed: () => _changeState(false),
+        ),
+      ],
     );
   }
 }
