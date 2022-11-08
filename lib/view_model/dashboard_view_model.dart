@@ -76,60 +76,60 @@ class DashboardViewModel with ChangeNotifier {
     }
   }
 
-  Future showAttendanceQr(BuildContext context, String path, String lecId) async {
-    final key = encrypt.Key.fromUtf8(Constants.encryptKey);
-    final iv = encrypt.IV.fromLength(16);
-    final encrypter = encrypt.Encrypter(encrypt.AES(key));
-    await Provider.of<AttendanceQrViewModel>(context, listen: false).changeRandomNum(lecId);
-    Timer timer = Timer.periodic(
-      const Duration(seconds: 10),
-      (_) async {
-        await Provider.of<AttendanceQrViewModel>(context, listen: false).changeRandomNum(lecId);
-      },
-    );
-    /// Just For Test
-
-    await windowManager.setPosition(const Offset(0, 0));
-    await windowManager.setSize(const Size(200, 200));
-
-    /// My Real Code
-    showDialog(
-        context: context,
-        builder: (ctx) {
-          return ContentDialog(
-            title: const Text('Please scan to attend'),
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Consumer<AttendanceQrViewModel>(
-                  builder: (ctx, qr, _) {
-                    Map<String, String> data = {
-                      "path": path,
-                      "randomNum": qr.randomNum.toString(),
-                      "lecId": lecId,
-                    };
-                    final encrypted = encrypter.encrypt(jsonEncode(data), iv: iv);
-                    return QrImage(
-                      backgroundColor: Colors.white,
-                      data: encrypted.base64,
-                      version: QrVersions.auto,
-                      size: 200.0,
-                    );
-                  },
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                child: const Text('Cancel'),
-                onPressed: () async {
-                  Navigator.pop(context);
-                  timer.cancel();
-                  await Provider.of<AttendanceQrViewModel>(context, listen: false).deleteRandomFromDB(lecId);
-                },
-              ),
-            ],
-          );
-        });
-  }
+  // Future showAttendanceQr(BuildContext context, String path, String lecId) async {
+  //   final key = encrypt.Key.fromUtf8(Constants.encryptKey);
+  //   final iv = encrypt.IV.fromLength(16);
+  //   final encrypter = encrypt.Encrypter(encrypt.AES(key));
+  //   await Provider.of<AttendanceQrViewModel>(context, listen: false).changeRandomNum(lecId);
+  //   Timer timer = Timer.periodic(
+  //     const Duration(seconds: 10),
+  //     (_) async {
+  //       await Provider.of<AttendanceQrViewModel>(context, listen: false).changeRandomNum(lecId);
+  //     },
+  //   );
+  //   /// Just For Test
+  //
+  //   await windowManager.setPosition(const Offset(0, 0));
+  //   await windowManager.setSize(const Size(200, 200));
+  //
+  //   /// My Real Code
+  //   showDialog(
+  //       context: context,
+  //       builder: (ctx) {
+  //         return ContentDialog(
+  //           title: const Text('Please scan to attend'),
+  //           content: Row(
+  //             mainAxisAlignment: MainAxisAlignment.center,
+  //             children: [
+  //               Consumer<AttendanceQrViewModel>(
+  //                 builder: (ctx, qr, _) {
+  //                   Map<String, String> data = {
+  //                     "path": path,
+  //                     "randomNum": qr.randomNum.toString(),
+  //                     "lecId": lecId,
+  //                   };
+  //                   final encrypted = encrypter.encrypt(jsonEncode(data), iv: iv);
+  //                   return QrImage(
+  //                     backgroundColor: Colors.white,
+  //                     data: encrypted.base64,
+  //                     version: QrVersions.auto,
+  //                     size: 200.0,
+  //                   );
+  //                 },
+  //               ),
+  //             ],
+  //           ),
+  //           actions: [
+  //             TextButton(
+  //               child: const Text('Cancel'),
+  //               onPressed: () async {
+  //                 Navigator.pop(context);
+  //                 timer.cancel();
+  //                 await Provider.of<AttendanceQrViewModel>(context, listen: false).deleteRandomFromDB(lecId);
+  //               },
+  //             ),
+  //           ],
+  //         );
+  //       });
+  // }
 }

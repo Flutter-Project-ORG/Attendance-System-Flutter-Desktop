@@ -22,16 +22,16 @@ Future main() async {
   await windowManager.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual, overlays: [SystemUiOverlay.bottom, SystemUiOverlay.top]);
-  //WindowManager _windowManager = WindowManager.instance;
   windowManager.setTitle('Student Attendance');
   windowManager.waitUntilReadyToShow().then((_) async {
     // Set to frameless window
     Size size = await windowManager.getSize();
     await windowManager.setMinimumSize(Size(540.0, size.height * 0.90));
-    // await windowManager.setMaximumSize(Size(size.width, size.height * 0.95),);
+    // await windowManager.setMaximumSize(Size(size.width, size.height),);
     windowManager.show();
     windowManager.focus();
   });
+
   runApp(
     MultiProvider(
       providers: [

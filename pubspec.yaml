@@ -24,6 +24,9 @@ dependencies:
   encrypt: ^5.0.1
   shared_preferences: ^2.0.15
   progress_indicators: ^1.0.0
+  carousel_slider: ^4.1.1
+  pdf: ^3.6.4
+  path_provider: ^2.0.11
 
 
 
@@ -40,9 +43,7 @@ flutter:
   assets:
     - assets/images/
 
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
+  fonts:
+    - family: Montserrat
+      fonts:
+        - asset: assets/fonts/OpenSans-Regular.ttf
