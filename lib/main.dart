@@ -1,3 +1,4 @@
+import 'package:attendance_system_flutter_desktop/view_model/attendance_qr_view_model.dart';
 import 'package:flutter/services.dart';
 
 import 'view_model/dashboard_view_model.dart';
@@ -15,21 +16,22 @@ import './views/splash_view.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
-import './external_providers/attendance_qr_provider.dart';
+
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual, overlays: [SystemUiOverlay.bottom, SystemUiOverlay.top]);
-  //WindowManager _windowManager = WindowManager.instance;
   windowManager.setTitle('Student Attendance');
   windowManager.waitUntilReadyToShow().then((_) async {
     // Set to frameless window
     Size size = await windowManager.getSize();
     await windowManager.setMinimumSize(Size(540.0, size.height * 0.90));
-    // await windowManager.setMaximumSize(Size(size.width, size.height * 0.95),);
+    // await windowManager.setMaximumSize(Size(size.width, size.height),);
     windowManager.show();
+    windowManager.focus();
   });
+
   runApp(
     MultiProvider(
       providers: [
@@ -52,7 +54,7 @@ Future main() async {
           create: (_) => LecturesAttendanceViewModel(),
         ),
         ChangeNotifierProvider(
-          create: (_) => AttendanceQrProvider(),
+          create: (_) => AttendanceQrViewModel(),
         ),
       ],
       child: const MyApp(),

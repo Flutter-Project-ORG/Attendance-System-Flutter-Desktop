@@ -39,7 +39,7 @@ class SubjectModel {
     return 'SubjectModel{subjectId: $subjectId, subjectName: $subjectName, instructorId: $instructorId}';
   }
 
-  Future<String> addSubject( String instructorId,Map<String,dynamic> subjectInfo) async {
+  Future<String> addSubject(String instructorId, Map<String, dynamic> subjectInfo) async {
     try {
       Uri url = Uri.parse('${Constants.realtimeUrl}/subjects/$instructorId.json');
       http.Response res = await http.post(
@@ -64,6 +64,20 @@ class SubjectModel {
       await http.delete(url);
       url = Uri.parse('${Constants.realtimeUrl}/subjects-students/$instructorId/$subjectId.json');
       await http.delete(url);
+      url = Uri.parse('${Constants.realtimeUrl}/students.json');
+      final http.Response res = await http.get(url);
+      final Map<String, dynamic> students = jsonDecode(res.body) as Map<String, dynamic>;
+      List studentsIds = students.keys.toList();
+      for (var id in studentsIds) {
+        if (students[id]['subjects'] != null) {
+          List ss = students[id]['subjects'] as List;
+          if (ss.contains(subjectId)) {
+            ss.remove(subjectId);
+            url = Uri.parse('${Constants.realtimeUrl}/students/$id/subjects.json');
+            await http.put(url, body: jsonEncode(ss));
+          }
+        }
+      }
     } catch (e) {
       rethrow;
     }
@@ -78,11 +92,10 @@ class SubjectModel {
     try {
       Uri url = Uri.parse('${Constants.realtimeUrl}/subjects/$instructorId.json');
       http.Response res = await http.get(url);
-      final jsonData = jsonDecode(res.body) as Map<String,dynamic>?;
+      final jsonData = jsonDecode(res.body) as Map<String, dynamic>?;
       return jsonData;
     } catch (e) {
       rethrow;
     }
   }
-
 }

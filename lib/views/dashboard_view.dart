@@ -2,7 +2,7 @@ import 'package:attendance_system_flutter_desktop/view_model/dashboard_view_mode
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 import '../widgets/live_lecture.dart';
-import '../widgets/is_attend_drop.dart';
+import '../widgets/latest_news.dart';
 class DashboardView extends StatefulWidget {
   const DashboardView({Key? key}) : super(key: key);
 
@@ -23,21 +23,11 @@ class _DashboardViewState extends State<DashboardView> {
           children: [
             Expanded(
               child: Row(
-                children:  [
+                children:  const[
+                   LatestNews(),
+                   SizedBox(width: 8.0,),
                   Expanded(
                     flex: 2,
-                    child: Card(
-                      child: Text("Card 1"),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Card(
-                      child: Text('Card 1'),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
                     child: Card(
                       child: Text('Card 1'),
                     ),
@@ -45,6 +35,7 @@ class _DashboardViewState extends State<DashboardView> {
                 ],
               ),
             ),
+            const SizedBox(height: 8.0,),
             Expanded(
               child: Row(
                 children:  [

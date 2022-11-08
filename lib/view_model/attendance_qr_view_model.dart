@@ -6,7 +6,7 @@ import '../res/contants.dart';
 
 import 'package:http/http.dart' as http;
 
-class AttendanceQrProvider with ChangeNotifier {
+class AttendanceQrViewModel with ChangeNotifier {
   int randomNum = Random().nextInt(100000) + 10000;
   Future<void> changeRandomNum(String lecId) async{
     randomNum = Random().nextInt(100000) + 10000;
@@ -22,7 +22,7 @@ class AttendanceQrProvider with ChangeNotifier {
     );
   }
 
-  Future deleteRandomToDB(String lecId)async{
+  Future deleteRandomFromDB(String lecId)async{
     Uri url = Uri.parse('${Constants.realtimeUrl}/lectures-temp/$lecId.json');
     await http.delete(
       url,

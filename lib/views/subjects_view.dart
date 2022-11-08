@@ -198,7 +198,7 @@ class _SubjectsViewState extends State<SubjectsView> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
-                                            QrImage(
+                                            QrImage(backgroundColor: Colors.white,
                                               data: encrypted.base64,
                                               version: QrVersions.auto,
                                               size: 200.0,
