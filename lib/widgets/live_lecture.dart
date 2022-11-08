@@ -71,7 +71,6 @@ class _LiveLectureState extends State<LiveLecture> {
                             Provider.of<AuthViewModel>(context, listen: false)
                                 .user!
                                 .instructorId!;
-
                             dashProvider.showAttendanceQr(
                               context,
                               "$insId/${dashProvider.lectureInfo['subId']}/${dashProvider.lectureInfo['lecId']}",
