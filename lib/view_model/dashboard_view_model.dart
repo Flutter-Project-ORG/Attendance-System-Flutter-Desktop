@@ -24,6 +24,8 @@ class DashboardViewModel with ChangeNotifier {
   Map<String, dynamic> get lectureInfo => _lectureInfo;
   bool get isLoadingLiveLecture => _isLoadingLiveLecture;
 
+  void clearLectureInfo() => _lectureInfo.clear();
+
   Future<void> getLiveSubject(BuildContext context) async {
     SubjectModel subjectModel = SubjectModel.instance;
     String insId = Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;

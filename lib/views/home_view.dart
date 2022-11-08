@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../view_model/home_view_model.dart';
 import 'dashboard_view.dart';
 import 'subjects_view.dart';
-
+import '../view_model/dashboard_view_model.dart';
 class HomeView extends StatelessWidget {
   const HomeView({Key? key}) : super(key: key);
   static const String routeName = '/home';
@@ -41,6 +41,7 @@ class HomeView extends StatelessWidget {
                   homeProvider.setPageIndex = 0;
                   homeProvider.logOut();
                   Navigator.pushReplacementNamed(context, AuthView.routeName);
+                  Provider.of<DashboardViewModel>(context,listen: false).clearLectureInfo();
                 },
                 icon: FaIcon(
                   FontAwesomeIcons.arrowRightFromBracket,
