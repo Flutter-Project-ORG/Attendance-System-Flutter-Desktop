@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:attendance_system_flutter_desktop/res/contants.dart';
+import 'package:attendance_system_flutter_desktop/views/auth_view.dart';
 import 'package:attendance_system_flutter_desktop/widgets/subject_days.dart';
 import 'package:flutter/material.dart' as material;
 
@@ -8,6 +9,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import '../view_model/auth_view_model.dart';
 import 'lectures_view.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 
@@ -175,14 +177,17 @@ class _SubjectsViewState extends State<SubjectsView> {
                                     ButtonState.all<Color>(Colors.white),
                               ),
                               onPressed: () {
-                                final subId = keyList[index];
+                                Map<String,dynamic> data = {
+                                  'subId':keyList[index],
+                                  'insId':Provider.of<AuthViewModel>(context,listen: false).user!.instructorId!,
+                                };
                                 final key =
                                     encrypt.Key.fromUtf8(Constants.encryptKey);
                                 final iv = encrypt.IV.fromLength(16);
                                 final encrypter =
                                     encrypt.Encrypter(encrypt.AES(key));
                                 final encrypted =
-                                    encrypter.encrypt(subId, iv: iv);
+                                    encrypter.encrypt(jsonEncode(data), iv: iv);
                                 showDialog(
                                     context: context,
                                     builder: (ctx) {
