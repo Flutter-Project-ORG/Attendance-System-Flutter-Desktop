@@ -71,9 +71,10 @@ class MyApp extends StatelessWidget {
     return FluentApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      // themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.light,
       theme: ThemeData(
         brightness: Brightness.light,
+
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,

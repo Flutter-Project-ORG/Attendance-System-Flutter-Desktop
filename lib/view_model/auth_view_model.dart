@@ -30,7 +30,6 @@ class AuthViewModel with ChangeNotifier {
       notifyListeners();
       Navigator.pushReplacementNamed(context, HomeView.routeName);
     } catch (e) {
-      throw e;
       String message = '';
       if (e == 'EMAIL_EXISTS') {
         message = 'The email address is already in use by another account.';

@@ -78,7 +78,6 @@ class _AttendanceQrViewState extends State<AttendanceQrView> {
     Size size = await windowManager.getSize();
     await windowManager.setTitleBarStyle(TitleBarStyle.normal);
     await windowManager.setAlwaysOnTop(false);
-
     await windowManager.setMinimumSize(Size(540.0, size.height * 0.90));
     await windowManager.setSize(initSize);
     windowManager.show();
