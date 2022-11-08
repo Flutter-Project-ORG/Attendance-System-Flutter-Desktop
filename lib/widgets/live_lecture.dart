@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../view_model/dashboard_view_model.dart';
 import '../view_model/lecture_attendance_view_model.dart';
+import '../views/attendance_qr_view.dart';
 import '../views/lecture_attendance_view.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -71,11 +72,19 @@ class _LiveLectureState extends State<LiveLecture> {
                             Provider.of<AuthViewModel>(context, listen: false)
                                 .user!
                                 .instructorId!;
-                            dashProvider.showAttendanceQr(
-                              context,
-                              "$insId/${dashProvider.lectureInfo['subId']}/${dashProvider.lectureInfo['lecId']}",
-                              dashProvider.lectureInfo['lecId'],
-                            );
+                            Navigator.push(
+                                context,
+                                FluentPageRoute(
+                                    builder: (_) => AttendanceQrView(
+                                      path: "$insId/${dashProvider.lectureInfo['subId']}/${dashProvider.lectureInfo['lecId']}",
+                                      lecId: dashProvider.lectureInfo['lecId'],
+                                      ctx: context,
+                                    )));
+                            // dashProvider.showAttendanceQr(
+                            //   context,
+                            //   "$insId/${dashProvider.lectureInfo['subId']}/${dashProvider.lectureInfo['lecId']}",
+                            //   dashProvider.lectureInfo['lecId'],
+                            // );
                           }catch(e){
                             if(e.toString() == 'There is no students for that subject.'){
                               showSnackbar(context,  Snackbar(content: Text(e.toString())));

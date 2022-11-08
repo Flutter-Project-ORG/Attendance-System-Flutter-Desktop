@@ -1,3 +1,4 @@
+import 'package:attendance_system_flutter_desktop/view_model/attendance_qr_view_model.dart';
 import 'package:flutter/services.dart';
 
 import 'view_model/dashboard_view_model.dart';
@@ -15,7 +16,7 @@ import './views/splash_view.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
-import './external_providers/attendance_qr_provider.dart';
+
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
@@ -29,6 +30,7 @@ Future main() async {
     await windowManager.setMinimumSize(Size(540.0, size.height * 0.90));
     // await windowManager.setMaximumSize(Size(size.width, size.height * 0.95),);
     windowManager.show();
+    windowManager.focus();
   });
   runApp(
     MultiProvider(
@@ -52,7 +54,7 @@ Future main() async {
           create: (_) => LecturesAttendanceViewModel(),
         ),
         ChangeNotifierProvider(
-          create: (_) => AttendanceQrProvider(),
+          create: (_) => AttendanceQrViewModel(),
         ),
       ],
       child: const MyApp(),

@@ -5,8 +5,10 @@ import 'dart:math';
 import 'package:attendance_system_flutter_desktop/view_model/auth_view_model.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as material;
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:window_manager/window_manager.dart';
 
 import '../models/subject_model.dart';
 import '../res/contants.dart';
@@ -14,7 +16,7 @@ import '../res/contants.dart';
 import 'package:http/http.dart' as http;
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
-import '../external_providers/attendance_qr_provider.dart';
+import 'attendance_qr_view_model.dart';
 
 class DashboardViewModel with ChangeNotifier {
   final bool _isLoadingLiveLecture = false;
@@ -78,14 +80,19 @@ class DashboardViewModel with ChangeNotifier {
     final key = encrypt.Key.fromUtf8(Constants.encryptKey);
     final iv = encrypt.IV.fromLength(16);
     final encrypter = encrypt.Encrypter(encrypt.AES(key));
-    await Provider.of<AttendanceQrProvider>(context, listen: false).changeRandomNum(lecId);
+    await Provider.of<AttendanceQrViewModel>(context, listen: false).changeRandomNum(lecId);
     Timer timer = Timer.periodic(
       const Duration(seconds: 10),
       (_) async {
-        await Provider.of<AttendanceQrProvider>(context, listen: false).changeRandomNum(lecId);
+        await Provider.of<AttendanceQrViewModel>(context, listen: false).changeRandomNum(lecId);
       },
     );
+    /// Just For Test
 
+    await windowManager.setPosition(const Offset(0, 0));
+    await windowManager.setSize(const Size(200, 200));
+
+    /// My Real Code
     showDialog(
         context: context,
         builder: (ctx) {
@@ -94,7 +101,7 @@ class DashboardViewModel with ChangeNotifier {
             content: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Consumer<AttendanceQrProvider>(
+                Consumer<AttendanceQrViewModel>(
                   builder: (ctx, qr, _) {
                     Map<String, String> data = {
                       "path": path,
@@ -103,6 +110,7 @@ class DashboardViewModel with ChangeNotifier {
                     };
                     final encrypted = encrypter.encrypt(jsonEncode(data), iv: iv);
                     return QrImage(
+                      backgroundColor: Colors.white,
                       data: encrypted.base64,
                       version: QrVersions.auto,
                       size: 200.0,
@@ -117,7 +125,7 @@ class DashboardViewModel with ChangeNotifier {
                 onPressed: () async {
                   Navigator.pop(context);
                   timer.cancel();
-                  await Provider.of<AttendanceQrProvider>(context, listen: false).deleteRandomToDB(lecId);
+                  await Provider.of<AttendanceQrViewModel>(context, listen: false).deleteRandomFromDB(lecId);
                 },
               ),
             ],

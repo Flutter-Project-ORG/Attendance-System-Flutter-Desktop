@@ -174,38 +174,7 @@ class SubjectsViewModel with ChangeNotifier {
             FilledButton(
               child: const Text('Add'),
               onPressed: () async {
-                /// For Test
-                // try{
-                //   time1 = {
-                //     'days': ['sunday','tuesday','thursday'],
-                //     'start': DateTime(2022,11,5,8,5).toIso8601String(),
-                //     'end': DateTime(2022,12,5,10,5).toIso8601String(),
-                //   };
-                //   time2 = {
-                //     'days': ['monday','wednesday'],
-                //     'start': DateTime(2022,11,5,8,5).toIso8601String(),
-                //     'end': DateTime(2022,12,5,10,5).toIso8601String(),
-                //   };
-                //   subjectInfo['subjectName'] = 'Test';
-                //   subjectInfo['startDate'] = DateTime(2022,11,5).toIso8601String();
-                //   subjectInfo['endDate'] = DateTime(2022,12,5).toIso8601String();
-                //   subjectInfo['times'] = {
-                //     'time1': time1,
-                //     'time2': time2,
-                //   };
-                //   String instructorId = Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;
-                //   String subId = await subjectModel.addSubject(instructorId, subjectInfo);
-                //   await lectureModel.addLecturesBySubject(instructorId, subId,DateTime(2022,11,5),DateTime(2022,12,5),subjectInfo['times']).then((_) async {
-                //     Navigator.pop(context);
-                //     await Provider.of<SubjectsViewModel>(context, listen: false).getSubjectsByInstructorId(context);
-                //   });
-                // }catch(e){
-                //   print('catch: $e');
-                // }
-                //
-                // return;
-
-                /// My Real Code
+              
                 if (!_checkSubjectInfo(context,
                     subName: controller.text,
                     weekDays: weekDays,
@@ -323,6 +292,7 @@ class SubjectsViewModel with ChangeNotifier {
                   await subjectModel.deleteSubject(subjectId, instructorId);
                   await lectureModel.deleteLecturesBySubject(subjectId, instructorId);
                   await lectureAttendanceModel.deleteAttendanceBySubject(subjectId, instructorId);
+                  
                   Navigator.pop(context);
                   await Provider.of<SubjectsViewModel>(context, listen: false).getSubjectsByInstructorId(context);
                 } catch (e) {
