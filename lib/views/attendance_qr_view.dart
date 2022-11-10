@@ -9,6 +9,8 @@ import '../res/constants.dart';
 import '../view_model/attendance_qr_view_model.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 
+import '../view_model/lecture_attendance_view_model.dart';
+
 class AttendanceQrView extends StatefulWidget {
   const AttendanceQrView(
       {Key? key, required this.path, required this.lecId, required this.ctx})
@@ -45,7 +47,12 @@ class _AttendanceQrViewState extends State<AttendanceQrView> {
           setState(() {
             final seconds = countDuration.inSeconds - reduceSecondsBy;
             if (seconds < 0) {
-              endTakingAttendance().then((value) => Navigator.pop(context));
+              endTakingAttendance().then((value){
+                Provider.of<LecturesAttendanceViewModel>(context,
+                            listen: false)
+                        .FetchLiveAttendance = false;
+                Navigator.pop(context);
+              });
             } else {
               countDuration = Duration(seconds: seconds);
             }
@@ -75,7 +82,9 @@ class _AttendanceQrViewState extends State<AttendanceQrView> {
   @override
   void dispose() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await endTakingAttendance();
+      if (mounted) {
+        await endTakingAttendance();
+      }
     });
     super.dispose();
   }
@@ -130,12 +139,18 @@ class _AttendanceQrViewState extends State<AttendanceQrView> {
               FilledButton(
                 child: const Text('Exit'),
                 onPressed: () async {
+                  // Provider.of<LecturesAttendanceViewModel>(context,
+                  //         listen: false)
+                  //     .FetchLiveAttendance = false;
                   await Provider.of<AttendanceQrViewModel>(widget.ctx,
                           listen: false)
                       .deleteRandomFromDB(widget.lecId);
-                  endTakingAttendance().then(
-                    (value) => Navigator.pop(context),
-                  );
+                  endTakingAttendance().then((value) {
+                    Provider.of<LecturesAttendanceViewModel>(context,
+                            listen: false)
+                        .FetchLiveAttendance = false;
+                    Navigator.pop(context);
+                  });
                 },
               ),
             ],

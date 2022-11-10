@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:encrypt/encrypt.dart' as encrypt;
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -27,6 +28,7 @@ class _SubjectsViewState extends State<SubjectsView> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      
       await Provider.of<SubjectsViewModel>(context, listen: false)
           .getSubjectsByInstructorId(context);
     });
@@ -89,8 +91,9 @@ class _SubjectsViewState extends State<SubjectsView> {
                                         Text(
                                           singleSubject['subjectName'],
                                           style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20,
+                                          ),
                                         ),
                                         Container(
                                           padding: const EdgeInsets.all(8.0),
@@ -102,8 +105,9 @@ class _SubjectsViewState extends State<SubjectsView> {
                                           child: Text(
                                             "Ends in : ${singleSubject['endDate'].toString().substring(0, 10)}",
                                             style: const TextStyle(
-                                                fontSize: 10,
-                                                color: Colors.white),
+                                              fontSize: 10,
+                                              color: Colors.white,
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -126,7 +130,7 @@ class _SubjectsViewState extends State<SubjectsView> {
                                           "${singleSubject['times']['time1']['start'].toString().substring(11, 16)} - ${singleSubject['times']['time1']['end'].toString().substring(11, 16)}",
                                           style: TextStyle(
                                             fontSize: 10,
-                                            color: Colors.grey.withOpacity(0.5),
+                                            //color: Colors.grey.withOpacity(0.5),
                                           ),
                                         ),
                                       ],
@@ -156,112 +160,119 @@ class _SubjectsViewState extends State<SubjectsView> {
                                             "${singleSubject['times']['time2']['start'].toString().substring(11, 16)} - ${singleSubject['times']['time1']['end'].toString().substring(11, 16)}",
                                             style: TextStyle(
                                               fontSize: 10,
-                                              color:
-                                                  Colors.grey.withOpacity(0.5),
+                                              // color:
+                                              //     Colors.grey.withOpacity(0.5),
                                             ),
                                           ),
                                         ],
                                       ),
                                     const Spacer(),
-                                    Wrap(
+                                    Row(
                                       children: [
-                                        FilledButton(
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                ButtonState.all<Color>(
-                                                    Colors.red),
-                                            foregroundColor:
-                                                ButtonState.all<Color>(
-                                                    Colors.white),
+                                        Expanded(
+                                          child: FilledButton(
+                                            style: ButtonStyle(
+                                              foregroundColor:
+                                                  ButtonState.all<Color>(
+                                                      Colors.white),
+                                            ),
+                                            onPressed: () {
+                                              Map<String, dynamic> data = {
+                                                'subId': keyList[index],
+                                                'insId':
+                                                    Provider.of<AuthViewModel>(
+                                                            context,
+                                                            listen: false)
+                                                        .user!
+                                                        .instructorId!,
+                                              };
+
+                                              final key = encrypt.Key.fromUtf8(
+                                                  Constants.encryptKey);
+                                              final iv =
+                                                  encrypt.IV.fromLength(16);
+                                              final encrypter =
+                                                  encrypt.Encrypter(
+                                                      encrypt.AES(key));
+                                              final encrypted = encrypter
+                                                  .encrypt(jsonEncode(data),
+                                                      iv: iv);
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (ctx) {
+                                                    return ContentDialog(
+                                                      title: Text(
+                                                          'Invite students to ${singleSubject['subjectName']}'),
+                                                      content: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          QrImage(
+                                                            backgroundColor:
+                                                                Colors.white,
+                                                            data: encrypted
+                                                                .base64,
+                                                            version:
+                                                                QrVersions.auto,
+                                                            size: 200.0,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      actions: [
+                                                        TextButton(
+                                                          child: const Text(
+                                                              'Cancel'),
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                        ),
+                                                      ],
+                                                    );
+                                                  });
+                                            },
+                                            child: const Text('Invite'),
                                           ),
-                                          onPressed: () {
-                                            provider.deleteSubject(
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Expanded(
+                                          child: FilledButton(
+                                            style: ButtonStyle(
+                                              backgroundColor:
+                                                  ButtonState.all<Color>(
+                                                      Colors.black),
+                                              foregroundColor:
+                                                  ButtonState.all<Color>(
+                                                      Colors.white),
+                                            ),
+                                            onPressed: () async {
+                                              await provider
+                                                  .printSubjectAttendance(
+                                                      context,
+                                                      keyList[index],
+                                                      singleSubject);
+                                            },
+                                            child: const Text('Print'),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        IconButton(
+                                          onPressed: () async {
+                                            
+                                            await provider.deleteSubject(
                                                 context,
                                                 keyList[index],
                                                 singleSubject['subjectName']);
                                           },
-                                          child: const Text('Delete'),
-                                        ),
-                                        FilledButton(
-                                          style: ButtonStyle(
-                                            foregroundColor:
-                                                ButtonState.all<Color>(
-                                                    Colors.white),
+                                          icon: FaIcon(
+                                            FontAwesomeIcons.trash,
+                                            color: Colors.red,
                                           ),
-                                          onPressed: () {
-                                            Map<String, dynamic> data = {
-                                              'subId': keyList[index],
-                                              'insId':
-                                                  Provider.of<AuthViewModel>(
-                                                          context,
-                                                          listen: false)
-                                                      .user!
-                                                      .instructorId!,
-                                            };
-
-                                            final key = encrypt.Key.fromUtf8(
-                                                Constants.encryptKey);
-                                            final iv =
-                                                encrypt.IV.fromLength(16);
-                                            final encrypter = encrypt.Encrypter(
-                                                encrypt.AES(key));
-                                            final encrypted = encrypter.encrypt(
-                                                jsonEncode(data),
-                                                iv: iv);
-                                            showDialog(
-                                                context: context,
-                                                builder: (ctx) {
-                                                  return ContentDialog(
-                                                    title: Text(
-                                                        'Invite students to ${singleSubject['subjectName']}'),
-                                                    content: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        QrImage(
-                                                          backgroundColor:
-                                                              Colors.white,
-                                                          data:
-                                                              encrypted.base64,
-                                                          version:
-                                                              QrVersions.auto,
-                                                          size: 200.0,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    actions: [
-                                                      TextButton(
-                                                        child: const Text(
-                                                            'Cancel'),
-                                                        onPressed: () {
-                                                          Navigator.pop(
-                                                              context);
-                                                        },
-                                                      ),
-                                                    ],
-                                                  );
-                                                });
-                                          },
-                                          child: const Text('Invite'),
-                                        ),
-                                        FilledButton(
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                ButtonState.all<Color>(
-                                                    Colors.black),
-                                            foregroundColor:
-                                                ButtonState.all<Color>(
-                                                    Colors.white),
-                                          ),
-                                          onPressed: () async {
-                                            await provider
-                                                .printSubjectAttendance(
-                                                    context,
-                                                    keyList[index],
-                                                    singleSubject);
-                                          },
-                                          child: const Text('Print'),
                                         ),
                                       ],
                                     ),
