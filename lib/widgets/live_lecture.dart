@@ -1,7 +1,3 @@
-import 'dart:math';
-
-import 'package:attendance_system_flutter_desktop/view_model/auth_view_model.dart';
-import 'package:attendance_system_flutter_desktop/widgets/live_lecture_attendance.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 
@@ -9,7 +5,8 @@ import '../view_model/dashboard_view_model.dart';
 import '../view_model/lecture_attendance_view_model.dart';
 import '../views/attendance_qr_view.dart';
 import '../views/lecture_attendance_view.dart';
-import 'package:qr_flutter/qr_flutter.dart';
+import '../view_model/auth_view_model.dart';
+import '../widgets/live_lecture_attendance.dart';
 
 class LiveLecture extends StatefulWidget {
   const LiveLecture({Key? key}) : super(key: key);
@@ -69,11 +66,14 @@ class _LiveLectureState extends State<LiveLecture> {
                               dashProvider.lectureInfo['lecId'],
                               context,
                             );
+                            if (!mounted) return;
                             final String insId = Provider.of<AuthViewModel>(
                               context,
                               listen: false,
                             ).user!.instructorId!;
-                            Provider.of<LecturesAttendanceViewModel>(context,listen: false).fetchLiveAttendance = false;
+                            Provider.of<LecturesAttendanceViewModel>(context,
+                                    listen: false)
+                                .fetchLiveAttendance = false;
                             Navigator.push(
                                 context,
                                 FluentPageRoute(
@@ -84,11 +84,6 @@ class _LiveLectureState extends State<LiveLecture> {
                                               dashProvider.lectureInfo['lecId'],
                                           ctx: context,
                                         )));
-                            // dashProvider.showAttendanceQr(
-                            //   context,
-                            //   "$insId/${dashProvider.lectureInfo['subId']}/${dashProvider.lectureInfo['lecId']}",
-                            //   dashProvider.lectureInfo['lecId'],
-                            // );
                           } catch (e) {
                             if (e.toString() ==
                                 'There is no students for that subject.') {

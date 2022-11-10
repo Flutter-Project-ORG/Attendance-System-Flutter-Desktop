@@ -4,7 +4,8 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:http/http.dart' as http;
 
-import '../res/contants.dart';
+import '../res/constants.dart';
+import '../res/custom_text_theme.dart';
 
 class LatestNews extends StatefulWidget {
   const LatestNews({Key? key}) : super(key: key);
@@ -41,26 +42,40 @@ class _LatestNewsState extends State<LatestNews> {
                 return CarouselSlider.builder(
                   itemCount: news.length,
                   itemBuilder: (BuildContext context, int index, _) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(news[index]['title']),
-                          Text(news[index]['subtitle']),
-                        ],
-                      ),
+                    final singleNews = news[index];
+                    return Stack(
+                      children: [
+                        Image.network(singleNews['imageLink'],fit: BoxFit.fill,width: double.infinity,),
+                        Positioned(
+                          left: 0,
+                          right: 0,
+                          bottom: 16.0,
+                          child: Container(
+                            color: Colors.black.withOpacity(0.5),
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(singleNews['title'],style: CustomTextTheme.header1,),
+                                const SizedBox(height: 8.0,),
+                                Text(singleNews['subtitle']),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     );
                   },
                   options: CarouselOptions(
                     height: 400,
                     aspectRatio: 16 / 9,
-                    viewportFraction: 0.8,
+                    viewportFraction: 0.5,
                     initialPage: 0,
                     enableInfiniteScroll: true,
                     reverse: false,
                     autoPlay: true,
-                    autoPlayInterval: Duration(seconds: 3),
-                    autoPlayAnimationDuration: Duration(milliseconds: 800),
+                    autoPlayInterval: const Duration(seconds: 3),
+                    autoPlayAnimationDuration: const Duration(milliseconds: 800),
                     autoPlayCurve: Curves.fastOutSlowIn,
                     enlargeCenterPage: true,
                     // onPageChanged: callbackFunction,

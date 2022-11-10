@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import '../res/contants.dart';
+import '../res/constants.dart';
 import 'package:http/http.dart' as http;
 
 class SubjectModel {

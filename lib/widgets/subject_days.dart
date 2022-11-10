@@ -2,7 +2,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 
 class SubjectDays extends StatelessWidget {
   final List<dynamic> _days;
-  SubjectDays(this._days);
+  const SubjectDays(this._days, {super.key});
 
   @override
   Widget build(BuildContext context) {

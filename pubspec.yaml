@@ -47,3 +47,6 @@ flutter:
     - family: Montserrat
       fonts:
         - asset: assets/fonts/OpenSans-Regular.ttf
+    - family: JosefinSans
+      fonts:
+        - asset: assets/fonts/JosefinSans-Regular.ttf

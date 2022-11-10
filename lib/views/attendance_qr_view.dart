@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-
-import 'package:attendance_system_flutter_desktop/view_model/lecture_attendance_view_model.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 
-import '../res/contants.dart';
+import '../res/constants.dart';
 import '../view_model/attendance_qr_view_model.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 
@@ -86,14 +84,9 @@ class _AttendanceQrViewState extends State<AttendanceQrView> {
     Size size = await windowManager.getSize();
     await windowManager.setTitleBarStyle(TitleBarStyle.normal);
     await windowManager.setAlwaysOnTop(false);
-<<<<<<< HEAD
     await windowManager.setMinimumSize(Size(540.0, size.height * 0.90));
-=======
->>>>>>> fbc2b1755612b26808387224a7163c3b6701f9c1
     await windowManager.setSize(initSize);
     await windowManager.setMinimumSize(Size(540.0, size.height * 0.90));
-
-    //windowManager.show();
     timer.cancel();
     countTimer.cancel();
   }

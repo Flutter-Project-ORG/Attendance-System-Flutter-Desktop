@@ -10,13 +10,15 @@ class SplashViewModel{
 
 
   Future<void> getInitData(BuildContext context)async{
+    final AuthViewModel authProvider = Provider.of<AuthViewModel>(context,listen: false);
+    final NavigatorState navigator = Navigator.of(context);
     InstructorModel? instructorModel = await InstructorModel.instance.getAuthData();
     if (instructorModel != null) {
-      Provider.of<AuthViewModel>(context,listen: false).setUser = instructorModel;
-      Navigator.of(context).pushReplacementNamed(HomeView.routeName);
+      authProvider.setUser = instructorModel;
+      navigator.pushReplacementNamed(HomeView.routeName);
       return;
     }
-    Navigator.of(context).pushReplacementNamed(AuthView.routeName);
+    navigator.pushReplacementNamed(AuthView.routeName);
   }
 
 }
