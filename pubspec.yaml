@@ -27,11 +27,10 @@ dependencies:
   carousel_slider: ^4.1.1
   pdf: ^3.6.4
   path_provider: ^2.0.11
+  flutter_staggered_animations: ^1.1.1
   flutter_inset_box_shadow: ^1.0.8
   badges: ^2.0.3
   file_picker: ^5.2.2
-
-
 
 dev_dependencies:
   flutter_test:

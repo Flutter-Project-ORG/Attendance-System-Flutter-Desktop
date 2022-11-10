@@ -32,7 +32,8 @@ class LecturesViewModel with ChangeNotifier {
       return;
     }
     try {
-      final response = await LectureModel.getLecturesBySubjectId(subId, uid!);
+      _lectures.clear();
+      final response = await LectureModel.getLecturesBySubjectId(subId,uid!);
       _lectures = json.decode(response.body) as List<dynamic>;
     } catch (_) {
       Components.showErrorSnackBar(ctx,
