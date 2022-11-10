@@ -162,7 +162,7 @@ class _SubjectsViewState extends State<SubjectsView> {
                                           ),
                                         ],
                                       ),
-                                    //const Spacer(),
+                                    const Spacer(),
                                     Wrap(
                                       children: [
                                         FilledButton(
