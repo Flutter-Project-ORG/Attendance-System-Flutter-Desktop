@@ -128,7 +128,7 @@ class _SubjectsViewState extends State<SubjectsView> {
                                         const Text("Time"),
                                         Text(
                                           "${singleSubject['times']['time1']['start'].toString().substring(11, 16)} - ${singleSubject['times']['time1']['end'].toString().substring(11, 16)}",
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontSize: 10,
                                             //color: Colors.grey.withOpacity(0.5),
                                           ),
@@ -158,7 +158,7 @@ class _SubjectsViewState extends State<SubjectsView> {
                                           const Text("Time"),
                                           Text(
                                             "${singleSubject['times']['time2']['start'].toString().substring(11, 16)} - ${singleSubject['times']['time1']['end'].toString().substring(11, 16)}",
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 10,
                                               // color:
                                               //     Colors.grey.withOpacity(0.5),
