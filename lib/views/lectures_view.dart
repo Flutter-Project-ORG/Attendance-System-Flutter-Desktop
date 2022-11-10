@@ -15,16 +15,7 @@ class LecturesView extends StatefulWidget {
 }
 
 class _LecturesViewState extends State<LecturesView> {
-  final List<Color> _colors =const[
-    Color(0xffE3FDFD),
-    Color(0xffCBF1F5),
-    Color(0xffA6E3E9),
-    Color(0xff71C9CE),
-    Color(0xffDEFCF9),
-    Color(0xffCADEFC),
-    Color(0xffC3BEF0),
-    Color(0xffCCA8E9)
-  ];
+
   String _getDay(String date) {
     String? day;
     int dayNum = DateFormat.d('en_US').parse(date.replaceAll('-', '/')).weekday;
@@ -64,8 +55,6 @@ class _LecturesViewState extends State<LecturesView> {
   bool _isFinished(String date){
     final DateTime lecDate = DateFormat.yMd().parse(date.replaceAll('-', '/'));
     final DateTime nowDate = DateTime.now().toLocal();
-    print(nowDate.day);
-    print(lecDate.month);
     if(nowDate.year > lecDate.year || (nowDate.year == lecDate.year && nowDate.month > lecDate.day) || (nowDate.year == lecDate.year && nowDate.month == lecDate.day && nowDate.day > lecDate.month)){
       return true;
     }
