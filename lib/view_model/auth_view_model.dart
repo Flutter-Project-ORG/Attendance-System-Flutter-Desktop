@@ -1,6 +1,5 @@
-import 'package:attendance_system_flutter_desktop/models/instructor_model.dart';
-import 'package:attendance_system_flutter_desktop/views/dashboard_view.dart';
-import 'package:attendance_system_flutter_desktop/views/home_view.dart';
+import '../models/instructor_model.dart';
+import '../views/home_view.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 class AuthViewModel with ChangeNotifier {
   AuthType authType = AuthType.login;
@@ -19,8 +18,8 @@ class AuthViewModel with ChangeNotifier {
 
   Future<void> authenticate(Map<String, String> userInfo, BuildContext context) async {
     try {
+      final NavigatorState navigator = Navigator.of(context);
       if (authType == AuthType.login) {
-
         user = await instructorModel.authenticate(
             email: userInfo['email']!, password: userInfo['password']!, isLogin: true);
       } else {
@@ -28,9 +27,8 @@ class AuthViewModel with ChangeNotifier {
             email: userInfo['email']!, password: userInfo['password']!, username: userInfo['username']!);
       }
       notifyListeners();
-      Navigator.pushReplacementNamed(context, HomeView.routeName);
+      navigator.pushNamed(HomeView.routeName);
     } catch (e) {
-      throw e;
       String message = '';
       if (e == 'EMAIL_EXISTS') {
         message = 'The email address is already in use by another account.';

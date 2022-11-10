@@ -5,7 +5,7 @@ import '../widgets/is_attend_drop.dart';
 
 class LiveLectureAttendance extends StatelessWidget {
   final String? lecId, subId;
-  LiveLectureAttendance({this.lecId, this.subId});
+  const LiveLectureAttendance({super.key, this.lecId, this.subId});
 
   @override
   Widget build(BuildContext context) {

@@ -71,16 +71,16 @@ class MyApp extends StatelessWidget {
     return FluentApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      // themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.dark,
       theme: ThemeData(
         brightness: Brightness.light,
+        fontFamily: 'JosefinSans',
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
+        fontFamily: 'JosefinSans',
       ),
       initialRoute: SplashView.routeName,
-      // initialRoute: AuthView.routeName,
-      // initialRoute: HomeView.routeName,
       routes: {
         AuthView.routeName: (_) => AuthView(),
         HomeView.routeName: (_) => const HomeView(),

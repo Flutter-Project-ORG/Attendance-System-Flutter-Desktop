@@ -27,6 +27,8 @@ dependencies:
   carousel_slider: ^4.1.1
   pdf: ^3.6.4
   path_provider: ^2.0.11
+  flutter_inset_box_shadow: ^1.0.8
+  badges: ^2.0.3
 
 
 
@@ -47,3 +49,6 @@ flutter:
     - family: Montserrat
       fonts:
         - asset: assets/fonts/OpenSans-Regular.ttf
+    - family: JosefinSans
+      fonts:
+        - asset: assets/fonts/JosefinSans-Regular.ttf

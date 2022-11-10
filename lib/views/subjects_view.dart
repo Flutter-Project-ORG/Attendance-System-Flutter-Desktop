@@ -1,23 +1,15 @@
 import 'dart:convert';
-import 'dart:io';
-import 'package:attendance_system_flutter_desktop/res/contants.dart';
-import 'package:attendance_system_flutter_desktop/views/auth_view.dart';
-import 'package:attendance_system_flutter_desktop/widgets/subject_days.dart';
-import 'package:flutter/material.dart' as material;
-
-import 'package:attendance_system_flutter_desktop/view_model/subjects_view_model.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/services.dart';
-
+import 'package:flutter/material.dart' as material;
+import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import '../view_model/auth_view_model.dart';
-import 'lectures_view.dart';
-import 'package:encrypt/encrypt.dart' as encrypt;
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
 
-import 'package:path_provider/path_provider.dart' as path_provider;
+import '../view_model/auth_view_model.dart';
+import '../view_model/subjects_view_model.dart';
+import '../res/constants.dart';
+import '../widgets/subject_days.dart';
+import 'lectures_view.dart';
 
 class SubjectsView extends StatefulWidget {
   const SubjectsView({Key? key}) : super(key: key);
@@ -41,9 +33,6 @@ class _SubjectsViewState extends State<SubjectsView> {
   @override
   Widget build(BuildContext context) {
     return ScaffoldPage(
-      header: const Text(
-        "Subjects",
-      ),
       content: Consumer<SubjectsViewModel>(
         builder: (BuildContext context, SubjectsViewModel provider, _) {
           if (provider.isLoading) {
@@ -174,7 +163,6 @@ class _SubjectsViewState extends State<SubjectsView> {
                               },
                               child: const Text('Delete'),
                             ),
-                            
                             FilledButton(
                               style: ButtonStyle(
                                 foregroundColor:
@@ -227,7 +215,6 @@ class _SubjectsViewState extends State<SubjectsView> {
                               },
                               child: const Text('Invite'),
                             ),
-                            
                             FilledButton(
                               style: ButtonStyle(
                                 backgroundColor:
@@ -236,100 +223,8 @@ class _SubjectsViewState extends State<SubjectsView> {
                                     ButtonState.all<Color>(Colors.white),
                               ),
                               onPressed: () async {
-                                final Map<String, dynamic>? att =
-                                    await SubjectsViewModel()
-                                        .getSubjectAttendance(
-                                  keyList[index],
-                                  context,
-                                );
-                                if (att == null) return;
-                                print(att);
-
-                                final pdf = pw.Document();
-                                final font = await rootBundle
-                                    .load("assets/fonts/OpenSans-Regular.ttf");
-                                final ttf = pw.Font.ttf(font);
-
-                                att.forEach((key, value) {
-                                  final List studentIds = att[key].keys.toList();
-                                  pdf.addPage(
-                                    pw.Page(
-                                        pageFormat: PdfPageFormat.a4,
-                                        build: (pw.Context context) {
-                                          return pw.Column(
-                                            crossAxisAlignment:
-                                                pw.CrossAxisAlignment.start,
-                                            children: [
-                                              pw.Align(
-                                                alignment:pw.Alignment.center,
-                                                child: pw.Text(singleSubject['subjectName']),
-                                              ),
-                                              pw.Text(key),
-                                              pw.Divider(),
-                                              pw.Row(
-                                                    children: [
-                                                      pw.Expanded(
-                                                        child: pw.Text(
-                                                          "Student name",
-                                                        ),
-                                                      ),
-                                                      pw.Expanded(
-                                                        child: pw.Text(
-                                                          "Attendance",
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                              pw.ListView.separated(
-                                                itemCount: studentIds.length,
-                                                separatorBuilder:
-                                                    (context, index) =>
-                                                        pw.Divider(),
-                                                itemBuilder: (context, index) {
-                                                  Map<String, dynamic>
-                                                      singleStudent = att[key]
-                                                          [studentIds[index]];
-                                                  return pw.Row(
-                                                    children: [
-                                                      pw.Expanded(
-                                                        child: pw.Text(
-                                                          singleStudent['studentName'],
-                                                        ),
-                                                      ),
-                                                      pw.Expanded(
-                                                        child: pw.Text(
-                                                          singleStudent['isAttend'] == true ? 'Attend' : 'Absent',
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  );
-                                                },
-                                              ),
-                                            ],
-                                          );
-                                        }),
-                                  );
-                                });
-
-                                Directory? output =
-                                    await path_provider.getDownloadsDirectory();
-                                output ??=
-                                    await path_provider.getTemporaryDirectory();
-                                final file = File(
-                                    "${output.path}/${singleSubject['subjectName']}.pdf");
-                                await file
-                                    .writeAsBytes(await pdf.save())
-                                    .then((value) {
-                                  showSnackbar(
-                                    context,
-                                    Snackbar(
-                                      content: Text(
-                                        'File download to ${value.path}',
-                                      ),
-                                      extended: true,
-                                    ),
-                                  );
-                                });
+                                await provider.printSubjectAttendance(
+                                    context, keyList[index], singleSubject);
                               },
                               child: const Text('Print'),
                             ),

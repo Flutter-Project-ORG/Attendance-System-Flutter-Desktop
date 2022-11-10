@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import '../res/contants.dart';
+import '../res/constants.dart';
 import 'package:http/http.dart' as http;
 
 class SubjectModel {
@@ -95,15 +95,10 @@ class SubjectModel {
   }
 
   Future getLiveSubject(String instructorId) async {
-    try {
-      Uri url =
-          Uri.parse('${Constants.realtimeUrl}/subjects/$instructorId.json');
-      http.Response res = await http.get(url);
-      final jsonData = jsonDecode(res.body) as Map<String, dynamic>?;
-      return jsonData;
-    } catch (e) {
-      rethrow;
-    }
+    Uri url = Uri.parse('${Constants.realtimeUrl}/subjects/$instructorId.json');
+    http.Response res = await http.get(url);
+    final jsonData = jsonDecode(res.body) as Map<String, dynamic>?;
+    return jsonData;
   }
 
   Future getSubjectAttendance(String subId, String insId) async {
