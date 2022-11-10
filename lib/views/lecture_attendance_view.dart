@@ -24,12 +24,28 @@ class LectureAttendanceView extends StatelessWidget {
         ),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: ProgressRing());
+            return NavigationView(
+              appBar: NavigationAppBar(
+                title: Text(
+                  lectureData['lecId']!,
+                  style: CustomTextTheme.header2,
+                ),
+              ),
+              content: const Center(child: ProgressRing()),
+            );
           }
           if (attendanceProvider.attendance.isEmpty) {
-            return Center(
-              child: Text(
-                "There's no attendance for ${lectureData['lecId']!} lecture.",
+            return NavigationView(
+              appBar: NavigationAppBar(
+                title: Text(
+                  lectureData['lecId']!,
+                  style: CustomTextTheme.header2,
+                ),
+              ),
+              content: Center(
+                child: Text(
+                  "There's no attendance for ${lectureData['lecId']!} lecture.",
+                ),
               ),
             );
           }

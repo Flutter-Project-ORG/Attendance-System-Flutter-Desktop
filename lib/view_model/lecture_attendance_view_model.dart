@@ -35,8 +35,8 @@ class LecturesAttendanceViewModel with ChangeNotifier {
       final response = await _lectureAttendanceModel
           .getAttendanceBySubjectIdAndLectureId(subId, lecId, uid!);
       _filterSearch.clear();
-      _attendance = json.decode(response.body) as Map<String, dynamic>;
-      _filterSearch = json.decode(response.body) as Map<String, dynamic>;
+      _attendance = (json.decode(response.body)?? <String, dynamic>{}) as Map<String, dynamic>;
+      _filterSearch = (json.decode(response.body)?? <String, dynamic>{}) as Map<String, dynamic>;
       fetchLiveAttendance = true;
     } catch (_) {
       Components.showErrorSnackBar(ctx,

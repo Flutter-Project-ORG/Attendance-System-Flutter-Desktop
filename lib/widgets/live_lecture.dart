@@ -22,6 +22,7 @@ class _LiveLectureState extends State<LiveLecture> {
   void initState() {
     _getLiveLecture = Provider.of<DashboardViewModel>(context, listen: false)
         .getLiveSubject(context);
+    // _getLiveLecture = Future.delayed(Duration.zero);
     super.initState();
   }
 
@@ -71,9 +72,9 @@ class _LiveLectureState extends State<LiveLecture> {
                               context,
                               listen: false,
                             ).user!.instructorId!;
-                            Provider.of<LecturesAttendanceViewModel>(context,
-                                    listen: false)
-                                .fetchLiveAttendance = false;
+                            // Provider.of<LecturesAttendanceViewModel>(context,
+                            //         listen: false)
+                            //     .fetchLiveAttendance = false;
                             Navigator.push(
                                 context,
                                 FluentPageRoute(

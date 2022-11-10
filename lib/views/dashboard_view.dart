@@ -28,17 +28,17 @@ class _DashboardViewState extends State<DashboardView> {
             const SizedBox(
               height: 8.0,
             ),
-            // Expanded(
-            //   child: Row(
-            //     children: [
-            //       const LiveLecture(),
-            //       Expanded(
-            //         flex: 1,
-            //         child: Image.asset('assets/images/logo.png'),
-            //       ),
-            //     ],
-            //   ),
-            // ),
+            Expanded(
+              child: Row(
+                children: [
+                  const LiveLecture(),
+                  Expanded(
+                    flex: 1,
+                    child: Image.asset('assets/images/logo.png'),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

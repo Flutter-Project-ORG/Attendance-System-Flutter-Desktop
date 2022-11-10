@@ -65,7 +65,7 @@ class DashboardViewModel with ChangeNotifier {
         }
       }
     } catch (_) {
-      showSnackbar(context, const Snackbar(content: Text('Something went wrong!')));
+      showSnackbar(context, const Snackbar(content: Text('Something went wrong!!!!!!!!!!!!!!')));
     }
   }
 }
