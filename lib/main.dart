@@ -74,11 +74,13 @@ class MyApp extends StatelessWidget {
       // themeMode: ThemeMode.dark,
       theme: ThemeData(
         brightness: Brightness.light,
+      
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
       ),
       initialRoute: SplashView.routeName,
+      
       // initialRoute: AuthView.routeName,
       // initialRoute: HomeView.routeName,
       routes: {

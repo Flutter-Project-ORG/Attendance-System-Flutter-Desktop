@@ -29,6 +29,7 @@ class LecturesViewModel with ChangeNotifier {
       return;
     }
     try {
+      _lectures.clear();
       final response = await LectureModel.getLecturesBySubjectId(subId,uid!);
       _lectures = json.decode(response.body) as List<dynamic>;
     } catch (err) {
