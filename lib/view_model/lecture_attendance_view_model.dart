@@ -26,7 +26,7 @@ class LecturesAttendanceViewModel with ChangeNotifier {
 
   bool fetchLiveAttendance = false;
 
-  set FetchLiveAttendance(bool value){
+  set setFetchLiveAttendance(bool value){
     notifyListeners();
   }
 

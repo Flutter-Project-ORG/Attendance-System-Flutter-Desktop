@@ -218,10 +218,10 @@ class SubjectsViewModel with ChangeNotifier {
                     'time1': time1,
                     'time2': time2,
                   };
-                  
+                  Provider.of<SubjectsViewModel>(context,listen: false).subjects.clear();
                   String subId =
                       await subjectModel.addSubject(instructorId, subjectInfo);
-                  Provider.of<SubjectsViewModel>(context,listen: false).subjects.clear();
+
                   await lectureModel
                       .addLecturesBySubject(instructorId, subId, startDate!,
                           endDate!, subjectInfo['times'])
@@ -329,8 +329,9 @@ class SubjectsViewModel with ChangeNotifier {
                         .user!
                         .instructorId!;
                 try {
-                  await subjectModel.deleteSubject(subjectId, instructorId);
                   Provider.of<SubjectsViewModel>(context,listen: false).subjects.clear();
+                  await subjectModel.deleteSubject(subjectId, instructorId);
+
                   await lectureModel.deleteLecturesBySubject(
                       subjectId, instructorId);
                   await lectureAttendanceModel

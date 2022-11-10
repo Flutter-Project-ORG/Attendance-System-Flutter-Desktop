@@ -50,7 +50,7 @@ class _AttendanceQrViewState extends State<AttendanceQrView> {
               endTakingAttendance().then((value){
                 Provider.of<LecturesAttendanceViewModel>(context,
                             listen: false)
-                        .FetchLiveAttendance = false;
+                        .setFetchLiveAttendance = false;
                 Navigator.pop(context);
               });
             } else {
@@ -148,7 +148,7 @@ class _AttendanceQrViewState extends State<AttendanceQrView> {
                   endTakingAttendance().then((value) {
                     Provider.of<LecturesAttendanceViewModel>(context,
                             listen: false)
-                        .FetchLiveAttendance = false;
+                        .setFetchLiveAttendance = false;
                     Navigator.pop(context);
                   });
                 },
