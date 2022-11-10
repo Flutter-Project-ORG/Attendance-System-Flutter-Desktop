@@ -211,8 +211,9 @@ class _SubjectsViewState extends State<SubjectsView> {
                                                           QrImage(
                                                             backgroundColor:
                                                                 Colors.white,
-                                                            data: encrypted
-                                                                .base64,
+                                                            data:
+                                                                encrypted.base64,
+
                                                             version:
                                                                 QrVersions.auto,
                                                             size: 200.0,
@@ -258,6 +259,7 @@ class _SubjectsViewState extends State<SubjectsView> {
                                             child: const Text('Print'),
                                           ),
                                         ),
+
                                         const SizedBox(
                                           width: 10,
                                         ),
@@ -273,6 +275,7 @@ class _SubjectsViewState extends State<SubjectsView> {
                                             FontAwesomeIcons.trash,
                                             color: Colors.red,
                                           ),
+
                                         ),
                                       ],
                                     ),

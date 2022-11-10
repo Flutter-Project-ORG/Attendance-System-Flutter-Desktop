@@ -39,8 +39,10 @@ class LecturesAttendanceViewModel with ChangeNotifier {
       final response = await _lectureAttendanceModel
           .getAttendanceBySubjectIdAndLectureId(subId, lecId, uid!);
       _filterSearch.clear();
-      _attendance = (json.decode(response.body)?? <String, dynamic>{}) as Map<String, dynamic>;
-      _filterSearch = (json.decode(response.body)?? <String, dynamic>{}) as Map<String, dynamic>;
+      _attendance = (json.decode(response.body) ?? <String, dynamic>{})
+          as Map<String, dynamic>;
+      _filterSearch = (json.decode(response.body) ?? <String, dynamic>{})
+          as Map<String, dynamic>;
       fetchLiveAttendance = true;
     } catch (_) {
       Components.showErrorSnackBar(ctx,
@@ -89,73 +91,74 @@ class LecturesAttendanceViewModel with ChangeNotifier {
     final List studentIds = attendance.keys.toList();
     pdf.addPage(
       pw.Page(
-          pageFormat: PdfPageFormat.a4,
-          build: (pw.Context context) {
-            return pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: [
-                pw.Align(
-                  alignment: pw.Alignment.center,
-                  child: pw.Text(
-                    lectureData['subName'],
-                    style: pw.TextStyle(
-                      fontWeight: pw.FontWeight.bold,
-                      fontSize: 24.0,
-                      letterSpacing: 2.0,
-                    ),
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context context) {
+          return pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Align(
+                alignment: pw.Alignment.center,
+                child: pw.Text(
+                  lectureData['subName'],
+                  style: pw.TextStyle(
+                    fontWeight: pw.FontWeight.bold,
+                    fontSize: 24.0,
+                    letterSpacing: 2.0,
                   ),
                 ),
-                pw.Text(lectureData['lecId']),
-                pw.Divider(),
-                pw.Table(
-                  border: pw.TableBorder.all(),
-                  children: [
+              ),
+              pw.Text(lectureData['lecId']),
+              pw.Divider(),
+              pw.Table(
+                border: pw.TableBorder.all(),
+                children: [
+                  pw.TableRow(
+                    children: [
+                      pw.Container(
+                        padding: const pw.EdgeInsets.all(4.0),
+                        child: pw.Text(
+                          'Student name',
+                          style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                            fontSize: 16.0,
+                          ),
+                        ),
+                      ),
+                      pw.Container(
+                        padding: const pw.EdgeInsets.all(4.0),
+                        child: pw.Text(
+                          'Attendance',
+                          style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                            fontSize: 16.0,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  for (int i = 0; i < attendance.length; i++)
                     pw.TableRow(
                       children: [
                         pw.Container(
                           padding: const pw.EdgeInsets.all(4.0),
-                          child: pw.Text(
-                            'Student name',
-                            style: pw.TextStyle(
-                              fontWeight: pw.FontWeight.bold,
-                              fontSize: 16.0,
-                            ),
-                          ),
+                          child:
+                              pw.Text(attendance[studentIds[i]]['studentName']),
                         ),
                         pw.Container(
                           padding: const pw.EdgeInsets.all(4.0),
                           child: pw.Text(
-                            'Attendance',
-                            style: pw.TextStyle(
-                              fontWeight: pw.FontWeight.bold,
-                              fontSize: 16.0,
-                            ),
-                          ),
+                              attendance[studentIds[i]]['isAttend'] == true
+                                  ? 'Attend'
+                                  : 'Absent'),
                         ),
                       ],
                     ),
-                    for (int i = 0; i < attendance.length; i++)
-                      pw.TableRow(
-                        children: [
-                          pw.Container(
-                            padding: const pw.EdgeInsets.all(4.0),
-                            child: pw.Text(
-                                attendance[studentIds[i]]['studentName']),
-                          ),
-                          pw.Container(
-                            padding: const pw.EdgeInsets.all(4.0),
-                            child: pw.Text(
-                                attendance[studentIds[i]]['isAttend'] == true
-                                    ? 'Attend'
-                                    : 'Absent'),
-                          ),
-                        ],
-                      ),
-                  ],
-                ),
-              ],
-            );
-          }),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
     );
     Directory? output = await path_provider.getDownloadsDirectory();
     output ??= await path_provider.getTemporaryDirectory();
