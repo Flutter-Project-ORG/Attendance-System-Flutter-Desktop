@@ -33,9 +33,6 @@ class _SubjectsViewState extends State<SubjectsView> {
   @override
   Widget build(BuildContext context) {
     return ScaffoldPage(
-      header: const Text(
-        "Subjects",
-      ),
       content: Consumer<SubjectsViewModel>(
         builder: (BuildContext context, SubjectsViewModel provider, _) {
           if (provider.isLoading) {

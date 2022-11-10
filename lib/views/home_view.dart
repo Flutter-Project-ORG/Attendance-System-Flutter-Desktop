@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../view_model/home_view_model.dart';
 import 'dashboard_view.dart';
 import 'subjects_view.dart';
+import 'profile_view.dart';
 import '../view_model/dashboard_view_model.dart';
 class HomeView extends StatelessWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -35,6 +36,11 @@ class HomeView extends StatelessWidget {
                 icon: const FaIcon(FontAwesomeIcons.tableList),
                 title: const Text('Subjects'),
                 body: const SubjectsView(),
+              ),
+              PaneItem(
+                icon: const FaIcon(FontAwesomeIcons.user),
+                title: const Text('Profile'),
+                body: const ProfileView(),
               ),
               PaneItem(
                 onTap: () {

@@ -22,8 +22,6 @@ class InstructorModel {
     this.imageUrl,
   });
 
-
-
   Future<InstructorModel> authenticate(
       {required String email, required String password, String? username, bool isLogin = false}) async {
     try {
