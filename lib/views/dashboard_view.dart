@@ -34,7 +34,7 @@ class _DashboardViewState extends State<DashboardView> {
                   const LiveLecture(),
                   Expanded(
                     flex: 1,
-                    child: Image.asset('assets/images/logo.png'),
+                    child: Image.asset('assets/images/login_image.png'),
                   ),
                 ],
               ),
