@@ -17,6 +17,10 @@ class AuthViewModel with ChangeNotifier {
   }
 
   Future<void> authenticate(Map<String, String> userInfo, BuildContext context) async {
+    NavigatorState navigator = Navigator.of(context);
+    showDialog(context: context, builder: (ctx){
+      return const Center(child: ProgressRing());
+    });
     try {
       final NavigatorState navigator = Navigator.of(context);
       if (authType == AuthType.login) {
@@ -26,9 +30,11 @@ class AuthViewModel with ChangeNotifier {
         user = await instructorModel.authenticate(
             email: userInfo['email']!, password: userInfo['password']!, username: userInfo['username']!);
       }
+      navigator.pop();
       notifyListeners();
       navigator.pushNamed(HomeView.routeName);
     } catch (e) {
+      navigator.pop();
       String message = '';
       if (e == 'EMAIL_EXISTS') {
         message = 'The email address is already in use by another account.';
