@@ -124,4 +124,10 @@ class InstructorModel {
       imageUrl: map['imageUrl'] as String?,
     );
   }
+
+  Future<void> changeProfileImage()async{
+
+  }
+
+
 }

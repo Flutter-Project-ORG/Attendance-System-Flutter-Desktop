@@ -12,6 +12,7 @@ import 'views/auth_view.dart';
 import 'views/lectures_view.dart';
 import 'views/lecture_attendance_view.dart';
 import './views/splash_view.dart';
+import 'view_model/profile_view_model.dart';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
@@ -55,6 +56,9 @@ Future main() async {
         ),
         ChangeNotifierProvider(
           create: (_) => AttendanceQrViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ProfileViewModel(),
         ),
       ],
       child: const MyApp(),

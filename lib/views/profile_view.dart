@@ -7,6 +7,7 @@ import 'package:badges/badges.dart';
 
 import '../models/instructor_model.dart';
 import '../view_model/auth_view_model.dart';
+import '../view_model/profile_view_model.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({Key? key}) : super(key: key);
@@ -52,7 +53,9 @@ class _ProfileViewState extends State<ProfileView> {
                 elevation: 0,
                 position: BadgePosition.bottomEnd(bottom: 4.0,end: 4.0),
                 badgeContent: IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    ProfileViewModel().changeProfileImage(context);
+                  },
                   icon: const Icon(FluentIcons.edit),
                 ),
                 child: CircleAvatar(
