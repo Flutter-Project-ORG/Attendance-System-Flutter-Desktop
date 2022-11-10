@@ -26,6 +26,10 @@ class LecturesAttendanceViewModel with ChangeNotifier {
 
   bool fetchLiveAttendance = false;
 
+  set FetchLiveAttendance(bool value){
+    notifyListeners();
+  }
+
   Future getAttendanceByLectureIdAndSubjectId(
       String subId, String lecId, BuildContext ctx) async {
     final uid =

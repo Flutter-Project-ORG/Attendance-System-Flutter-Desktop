@@ -47,11 +47,13 @@ class _LiveLectureState extends State<LiveLecture> {
                   children: [
                     ListTile(
                       onPressed: () {
+                        //print(dashProvider.lectureInfo['lecId']);
                         Navigator.of(context).pushNamed(
                             LectureAttendanceView.routeName,
                             arguments: {
                               "subId": dashProvider.lectureInfo['subId'],
-                              "lecId": dashProvider.lectureInfo['lecId']
+                              "lecId": dashProvider.lectureInfo['lecId'],
+                              "subName" : dashProvider.lectureInfo['subName']
                             });
                       },
                       title: Text(dashProvider.lectureInfo['lecId']),
@@ -76,15 +78,16 @@ class _LiveLectureState extends State<LiveLecture> {
                             //         listen: false)
                             //     .fetchLiveAttendance = false;
                             Navigator.push(
-                                context,
-                                FluentPageRoute(
-                                    builder: (_) => AttendanceQrView(
-                                          path:
-                                              "$insId/${dashProvider.lectureInfo['subId']}/${dashProvider.lectureInfo['lecId']}",
-                                          lecId:
-                                              dashProvider.lectureInfo['lecId'],
-                                          ctx: context,
-                                        )));
+                              context,
+                              FluentPageRoute(
+                                builder: (_) => AttendanceQrView(
+                                  path:
+                                      "$insId/${dashProvider.lectureInfo['subId']}/${dashProvider.lectureInfo['lecId']}",
+                                  lecId: dashProvider.lectureInfo['lecId'],
+                                  ctx: context,
+                                ),
+                              ),
+                            );
                           } catch (e) {
                             if (e.toString() ==
                                 'There is no students for that subject.') {

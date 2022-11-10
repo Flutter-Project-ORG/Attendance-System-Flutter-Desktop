@@ -1,5 +1,6 @@
 import 'package:attendance_system_flutter_desktop/views/auth_view.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import '../view_model/home_view_model.dart';
@@ -7,6 +8,7 @@ import 'dashboard_view.dart';
 import 'subjects_view.dart';
 import 'profile_view.dart';
 import '../view_model/dashboard_view_model.dart';
+
 class HomeView extends StatelessWidget {
   const HomeView({Key? key}) : super(key: key);
   static const String routeName = '/home';
@@ -40,25 +42,82 @@ class HomeView extends StatelessWidget {
               PaneItem(
                 icon: const FaIcon(FontAwesomeIcons.user),
                 title: const Text('Profile'),
+                trailing: IconButton(
+                  icon: const Icon(FluentIcons.sign_out,),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => ContentDialog(
+                        title: const Text("Logout"),
+                        content: const Text("Are you sure to logout ?"),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              homeProvider.setPageIndex = 0;
+                              homeProvider.logOut();
+                              Navigator.pushReplacementNamed(
+                                  context, AuthView.routeName);
+                              Provider.of<DashboardViewModel>(context,
+                                      listen: false)
+                                  .clearLectureInfo();
+                            },
+                            child: const Text("YES"),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text("NO"),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
                 body: const ProfileView(),
               ),
-              PaneItem(
-                onTap: () {
-                  homeProvider.setPageIndex = 0;
-                  homeProvider.logOut();
-                  Navigator.pushReplacementNamed(context, AuthView.routeName);
-                  Provider.of<DashboardViewModel>(context,listen: false).clearLectureInfo();
-                },
-                icon: FaIcon(
-                  FontAwesomeIcons.arrowRightFromBracket,
-                  color: Colors.red,
-                ),
-                title: Text(
-                  'Logout',
-                  style: TextStyle(color: Colors.red),
-                ),
-                body: Container(),
-              ),
+              // PaneItem(
+              //   onTap: () {
+              //     showDialog(
+              //       context: context,
+              //       builder: (context) => ContentDialog(
+              //         title: const Text("Logout"),
+              //         content: const Text("Are you sure to logout ?"),
+              //         actions: [
+              //           TextButton(
+              //             onPressed: () {
+              //               Navigator.of(context).pop();
+              //               homeProvider.setPageIndex = 0;
+              //               homeProvider.logOut();
+              //               Navigator.pushReplacementNamed(
+              //                   context, AuthView.routeName);
+              //               Provider.of<DashboardViewModel>(context,
+              //                       listen: false)
+              //                   .clearLectureInfo();
+              //             },
+              //             child: const Text("YES"),
+              //           ),
+              //           TextButton(
+              //             onPressed: () {
+              //               Navigator.of(context).pop();
+              //             },
+              //             child: const Text("NO"),
+              //           ),
+              //         ],
+              //       ),
+              //     );
+              //   },
+              //   icon: FaIcon(
+              //     FontAwesomeIcons.arrowRightFromBracket,
+              //     color: Colors.red,
+              //   ),
+              //   title: Text(
+              //     'Logout',
+              //     style: TextStyle(color: Colors.red),
+              //   ),
+              //   body: Container(),
+              // ),
             ],
           ),
         );
