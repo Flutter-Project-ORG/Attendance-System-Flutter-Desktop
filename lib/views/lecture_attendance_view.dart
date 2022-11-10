@@ -1,14 +1,9 @@
-import 'dart:io';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../view_model/lecture_attendance_view_model.dart';
-import '../widgets/row_data.dart';
-import '../widgets/is_attend_drop.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
 
-import 'package:path_provider/path_provider.dart' as path_provider;
+import '../view_model/lecture_attendance_view_model.dart';
+import '../widgets/is_attend_drop.dart';
+import '../res/custom_text_theme.dart';
 
 class LectureAttendanceView extends StatelessWidget {
   const LectureAttendanceView({super.key});
@@ -29,98 +24,51 @@ class LectureAttendanceView extends StatelessWidget {
         ),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: ProgressRing());
+            return NavigationView(
+              appBar: NavigationAppBar(
+                title: Text(
+                  lectureData['lecId']!,
+                  style: CustomTextTheme.header2,
+                ),
+              ),
+              content: const Center(child: ProgressRing()),
+            );
           }
           if (attendanceProvider.attendance.isEmpty) {
-            return Center(
-              child: Text(
-                "There's no attendance for ${lectureData['lecId']!} lecture.",
+            return NavigationView(
+              appBar: NavigationAppBar(
+                title: Text(
+                  lectureData['lecId']!,
+                  style: CustomTextTheme.header2,
+                ),
+              ),
+              content: Center(
+                child: Text(
+                  "There's no attendance for ${lectureData['lecId']!} lecture.",
+                ),
               ),
             );
           }
           return NavigationView(
             appBar: NavigationAppBar(
-              title: Text(lectureData['lecId']!),
-              actions: FilledButton(
-                child: const Text('Print attendance'),
-                onPressed: () async {
-                  final pdf = pw.Document();
-
-                  final font = await rootBundle
-                      .load("assets/fonts/OpenSans-Regular.ttf");
-                  final ttf = pw.Font.ttf(font);
-                  final List studentIds = attendanceProvider.attendance.keys.toList();
-                  pdf.addPage(
-                    pw.Page(
-                        pageFormat: PdfPageFormat.a4,
-                        build: (pw.Context context) {
-                          return pw.Column(
-                            crossAxisAlignment: pw.CrossAxisAlignment.start,
-                            children: [
-                              pw.Align(
-                                alignment: pw.Alignment.center,
-                                child: pw.Text(lectureData['subName']),
-                              ),
-                              pw.Text(lectureData['lecId']),
-                              pw.Divider(),
-                              pw.Row(
-                                children: [
-                                  pw.Expanded(
-                                    child: pw.Text(
-                                      "Student name",
-                                    ),
-                                  ),
-                                  pw.Expanded(
-                                    child: pw.Text(
-                                      "Attendance",
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              pw.ListView.separated(
-                                itemCount: attendanceProvider.attendance.length,
-                                separatorBuilder: (context, index) =>
-                                    pw.Divider(),
-                                itemBuilder: (context, index) {
-                                  Map<String, dynamic> singleStudent =
-                                      attendanceProvider.attendance[studentIds[index]];
-                                  return pw.Row(
-                                    children: [
-                                      pw.Expanded(
-                                        child: pw.Text(
-                                          singleStudent['studentName'],
-                                        ),
-                                      ),
-                                      pw.Expanded(
-                                        child: pw.Text(
-                                          singleStudent['isAttend'] == true
-                                              ? 'Attend'
-                                              : 'Absent',
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ),
-                            ],
-                          );
-                        }),
-                  );
-                  Directory? output =
-                      await path_provider.getDownloadsDirectory();
-                  output ??= await path_provider.getTemporaryDirectory();
-                  final file =
-                      File("${output.path}/${lectureData['lecId']}.pdf");
-                  await file.writeAsBytes(await pdf.save()).then((value) {
-                    showSnackbar(
-                      context,
-                      Snackbar(
-                        content: Text('File download to ${value.path}'),
-                        extended: true,
-                      ),
-                    );
-                  });
-                },
+              title: Text(
+                lectureData['lecId']!,
+                style: CustomTextTheme.header2,
+              ),
+              actions: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FilledButton(
+                      child: const Text('Print attendance'),
+                      onPressed: () async {
+                        await attendanceProvider.printLectureAttendance(
+                            context, lectureData);
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
             content: FutureBuilder(
@@ -140,82 +88,114 @@ class LectureAttendanceView extends StatelessWidget {
                     ),
                   );
                 }
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextBox(
-                      header: 'Search for a student:',
-                      placeholder: 'Name or Student id',
-                      expands: false,
-                      onChanged: (value) {
-                        attendanceProvider.filterBySearch(value);
-                      },
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: const Text(
-                              "Student Name",
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 16.0, horizontal: 64.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextBox(
+                        prefix: const Padding(
+                          padding: EdgeInsets.only(left: 8.0),
+                          child: Icon(FluentIcons.search_art64),
                         ),
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: const Text(
-                              "Attend",
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Consumer<LecturesAttendanceViewModel>(
-                      builder: (context, att, _) {
-                        List<String> keyList = att.filterSearch.keys.toList();
-                        return Expanded(
-                          child: ListView.separated(
-                            itemBuilder: (context, index) {
-                              Map<String, dynamic> singleAtt =
-                                  att.filterSearch[keyList[index]];
-                              return Row(
-                                children: [
-                                  //RowData(keyList[index]),
-                                  RowData(singleAtt['studentName']),
-                                  Expanded(
-                                    child: IsAttendDrop(
-                                      singleAtt['isAttend'],
-                                      {
-                                        "studentId": keyList[index],
-                                        "subId": lectureData['subId']!,
-                                        "lecId": lectureData['lecId']!,
-                                      },
+                        padding: const EdgeInsets.all(8.0),
+                        headerStyle: CustomTextTheme.body1,
+                        header: 'Search for a student:',
+                        placeholder: 'Name of Student',
+                        expands: false,
+                        onChanged: (value) {
+                          attendanceProvider.filterBySearch(value);
+                        },
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Table(
+                        border: TableBorder.all(
+                            borderRadius: BorderRadius.circular(8.0)),
+                        children: const [
+                          TableRow(
+                            children: [
+                              TableCell(
+                                verticalAlignment:
+                                    TableCellVerticalAlignment.middle,
+                                child: Padding(
+                                  padding: EdgeInsets.all(12.0),
+                                  child: Text(
+                                    "Student Name",
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  //RowData(singleAtt['isAttend'].toString()),
+                                ),
+                              ),
+                              TableCell(
+                                verticalAlignment:
+                                    TableCellVerticalAlignment.middle,
+                                child: Padding(
+                                  padding: EdgeInsets.all(16.0),
+                                  child: Text(
+                                    "Attend",
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Consumer<LecturesAttendanceViewModel>(
+                        builder: (context, att, _) {
+                          List<String> keyList = att.filterSearch.keys.toList();
+                          return Table(
+                            border: TableBorder.all(
+                                borderRadius: BorderRadius.circular(8.0)),
+                            children: keyList.map<TableRow>((e) {
+                              Map<String, dynamic> singleAtt =
+                                  att.filterSearch[e];
+                              return TableRow(
+                                children: [
+                                  TableCell(
+                                    verticalAlignment:
+                                        TableCellVerticalAlignment.middle,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Text(
+                                        singleAtt['studentName'],
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  TableCell(
+                                    verticalAlignment:
+                                        TableCellVerticalAlignment.middle,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: IsAttendDrop(
+                                        singleAtt['isAttend'],
+                                        {
+                                          "studentId": e,
+                                          "subId": lectureData['subId']!,
+                                          "lecId": lectureData['lecId']!,
+                                        },
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               );
-                            },
-                            separatorBuilder: (context, index) =>
-                                const Divider(),
-                            itemCount: att.filterSearch.length,
-                          ),
-                        );
-                      },
-                    )
-                  ],
+                            }).toList(),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 );
               },
             ),

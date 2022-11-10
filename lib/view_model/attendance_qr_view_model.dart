@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:fluent_ui/fluent_ui.dart';
 
-import '../res/contants.dart';
+import '../res/constants.dart';
 
 import 'package:http/http.dart' as http;
 

@@ -2,7 +2,6 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 
 import '../view_model/auth_view_model.dart';
-import 'home_view.dart';
 
 class AuthView extends StatelessWidget {
   AuthView({Key? key}) : super(key: key);
@@ -10,7 +9,7 @@ class AuthView extends StatelessWidget {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  Map<String, String> userInfo = {};
+  final Map<String, String> userInfo = {};
 
   @override
   Widget build(BuildContext context) {

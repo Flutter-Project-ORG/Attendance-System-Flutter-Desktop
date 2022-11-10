@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import '../res/contants.dart';
+import '../res/constants.dart';
 
 class LectureAttendanceModel {
   LectureAttendanceModel._();

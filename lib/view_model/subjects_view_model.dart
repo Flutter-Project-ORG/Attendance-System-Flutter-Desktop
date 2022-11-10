@@ -1,17 +1,25 @@
 import 'dart:convert';
-import '../models/subject_model.dart';
-import '../models/lecture_model.dart';
-import '../models/lecture_attendance_model.dart';
-import 'auth_view_model.dart';
+import 'dart:io';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:path_provider/path_provider.dart' as path_provider;
+
+import '../models/subject_model.dart';
+import '../models/lecture_model.dart';
+import '../models/lecture_attendance_model.dart';
+import 'auth_view_model.dart';
 import './dashboard_view_model.dart';
+import '../res/components.dart';
+
 class SubjectsViewModel with ChangeNotifier {
   SubjectModel subjectModel = SubjectModel.instance;
   LectureModel lectureModel = LectureModel.instance;
-  LectureAttendanceModel lectureAttendanceModel = LectureAttendanceModel.instance;
+  LectureAttendanceModel lectureAttendanceModel =
+      LectureAttendanceModel.instance;
 
   Future<void> addSubject(BuildContext context) async {
     Map<String, dynamic> subjectInfo = {};
@@ -135,7 +143,11 @@ class SubjectsViewModel with ChangeNotifier {
                     TextButton(
                       onPressed: () {
                         if (time1 != null) {
-                          showSnackbar(context, const Snackbar(content: Text('You cannot add more than two times')));
+                          showSnackbar(
+                              context,
+                              const Snackbar(
+                                  content: Text(
+                                      'You cannot add more than two times')));
                           return;
                         }
                         if (!_checkSubjectInfo(context,
@@ -174,7 +186,6 @@ class SubjectsViewModel with ChangeNotifier {
             FilledButton(
               child: const Text('Add'),
               onPressed: () async {
-              
                 if (!_checkSubjectInfo(context,
                     subName: controller.text,
                     weekDays: weekDays,
@@ -182,7 +193,10 @@ class SubjectsViewModel with ChangeNotifier {
                     dates: [startDate, endDate])) {
                   return;
                 }
-                String instructorId = Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;
+                String instructorId =
+                    Provider.of<AuthViewModel>(context, listen: false)
+                        .user!
+                        .instructorId!;
                 try {
                   if (time1 == null) {
                     time1 = {
@@ -204,15 +218,19 @@ class SubjectsViewModel with ChangeNotifier {
                     'time1': time1,
                     'time2': time2,
                   };
-                  String subId = await subjectModel.addSubject(instructorId, subjectInfo);
+                  String subId =
+                      await subjectModel.addSubject(instructorId, subjectInfo);
                   await lectureModel
-                      .addLecturesBySubject(instructorId, subId, startDate!, endDate!, subjectInfo['times'])
+                      .addLecturesBySubject(instructorId, subId, startDate!,
+                          endDate!, subjectInfo['times'])
                       .then((_) async {
                     Navigator.pop(context);
-                    await Provider.of<SubjectsViewModel>(context, listen: false).getSubjectsByInstructorId(context);
+                    await Provider.of<SubjectsViewModel>(context, listen: false)
+                        .getSubjectsByInstructorId(context);
                   });
                 } catch (e) {
-                  showSnackbar(context, const Snackbar(content: Text('Something went wrong!')));
+                  showSnackbar(context,
+                      const Snackbar(content: Text('Something went wrong!')));
                 }
               },
             ),
@@ -233,36 +251,46 @@ class SubjectsViewModel with ChangeNotifier {
   }
 
   bool _checkSubjectInfo(BuildContext context,
-      {required String subName, required List weekDays, required List times, required List dates}) {
+      {required String subName,
+      required List weekDays,
+      required List times,
+      required List dates}) {
     if (subName.isEmpty) {
-      showSnackbar(context, const Snackbar(content: Text('You must insert a name')));
+      showSnackbar(
+          context, const Snackbar(content: Text('You must insert a name')));
       return false;
     }
     List selectedDays = _getSelectedDays(weekDays);
     if (selectedDays.isEmpty) {
-      showSnackbar(context, const Snackbar(content: Text('You must choose a day')));
+      showSnackbar(
+          context, const Snackbar(content: Text('You must choose a day')));
       return false;
     }
     if (times[0] == null) {
-      showSnackbar(context, const Snackbar(content: Text('You must choose a start time')));
+      showSnackbar(context,
+          const Snackbar(content: Text('You must choose a start time')));
       return false;
     }
     if (times[1] == null) {
-      showSnackbar(context, const Snackbar(content: Text('You must choose a end time')));
+      showSnackbar(
+          context, const Snackbar(content: Text('You must choose a end time')));
       return false;
     }
     if (dates[0] == null) {
-      showSnackbar(context, const Snackbar(content: Text('You must choose a start date')));
+      showSnackbar(context,
+          const Snackbar(content: Text('You must choose a start date')));
       return false;
     }
     if (dates[1] == null) {
-      showSnackbar(context, const Snackbar(content: Text('You must choose a end date')));
+      showSnackbar(
+          context, const Snackbar(content: Text('You must choose a end date')));
       return false;
     }
     return true;
   }
 
-  Future<void> deleteSubject(BuildContext context, String subjectId, String subjectName) async {
+  Future<void> deleteSubject(
+      BuildContext context, String subjectId, String subjectName) async {
     await showDialog(
       context: context,
       builder: (context) {
@@ -272,7 +300,9 @@ class SubjectsViewModel with ChangeNotifier {
             text: TextSpan(
               text: 'You want to delete ',
               children: [
-                TextSpan(text: subjectName, style: const TextStyle(fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: subjectName,
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
                 const TextSpan(text: ' ?'),
               ],
             ),
@@ -287,17 +317,31 @@ class SubjectsViewModel with ChangeNotifier {
             FilledButton(
               child: const Text('Yes'),
               onPressed: () async {
-                
-                String instructorId = Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;
+                final NavigatorState navigator = Navigator.of(context);
+                final DashboardViewModel dashProvider =
+                    Provider.of<DashboardViewModel>(context, listen: false);
+                final SubjectsViewModel subProvider =
+                    Provider.of<SubjectsViewModel>(context, listen: false);
+                String instructorId =
+                    Provider.of<AuthViewModel>(context, listen: false)
+                        .user!
+                        .instructorId!;
                 try {
                   await subjectModel.deleteSubject(subjectId, instructorId);
-                  await lectureModel.deleteLecturesBySubject(subjectId, instructorId);
-                  await lectureAttendanceModel.deleteAttendanceBySubject(subjectId, instructorId);
-                  Provider.of<DashboardViewModel>(context,listen: false).clearLectureInfo();
-                  Navigator.pop(context);
-                  await Provider.of<SubjectsViewModel>(context, listen: false).getSubjectsByInstructorId(context);
+                  await lectureModel.deleteLecturesBySubject(
+                      subjectId, instructorId);
+                  await lectureAttendanceModel
+                      .deleteAttendanceBySubject(subjectId, instructorId)
+                      .then((_) async {
+                    dashProvider.clearLectureInfo();
+                    navigator.pop();
+                    await subProvider.getSubjectsByInstructorId(context);
+                  });
                 } catch (e) {
-                  showSnackbar(context, const Snackbar(content: Text('Something went wrong. Try again.')));
+                  showSnackbar(
+                      context,
+                      const Snackbar(
+                          content: Text('Something went wrong. Try again.')));
                 }
               },
             ),
@@ -313,20 +357,124 @@ class SubjectsViewModel with ChangeNotifier {
   Future<void> getSubjectsByInstructorId(BuildContext context) async {
     isLoading = true;
     notifyListeners();
-    String instructorId = Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;
-    http.Response res = await subjectModel.getSubjectsByInstructorId(instructorId);
+    String instructorId =
+        Provider.of<AuthViewModel>(context, listen: false).user!.instructorId!;
+    http.Response res =
+        await subjectModel.getSubjectsByInstructorId(instructorId);
     subjects = jsonDecode(res.body) ?? <String, dynamic>{};
     isLoading = false;
     notifyListeners();
   }
 
-  Future getSubjectAttendance(String subId,BuildContext context) async {
-    try{ 
-      final String insId = Provider.of<AuthViewModel>(context,listen: false).user!.instructorId!;
-      final response = await SubjectModel.instance.getSubjectAttendance(subId, insId);
-      return jsonDecode(response.body) as Map<String,dynamic>?;
-    }catch(err){
-
+  Future getSubjectAttendance(String subId, BuildContext context) async {
+    try {
+      final String insId = Provider.of<AuthViewModel>(context, listen: false)
+          .user!
+          .instructorId!;
+      final response =
+          await SubjectModel.instance.getSubjectAttendance(subId, insId);
+      return jsonDecode(response.body) as Map<String, dynamic>?;
+    } catch (_) {
+      Components.showErrorSnackBar(context,
+          text: 'Something went wrong. try again.');
     }
+  }
+
+  Future<void> printSubjectAttendance(BuildContext context, String subId,
+      Map<String, dynamic> singleSubject) async {
+    final Map<String, dynamic>? att = await getSubjectAttendance(
+      subId,
+      context,
+    );
+    if (att == null) return;
+    final pdf = pw.Document();
+    att.forEach((key, value) {
+      final List studentIds = att[key].keys.toList();
+      pdf.addPage(
+        pw.Page(
+            pageFormat: PdfPageFormat.a4,
+            build: (pw.Context context) {
+              return pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Align(
+                    alignment: pw.Alignment.center,
+                    child: pw.Text(
+                      singleSubject['subjectName'],
+                      style: pw.TextStyle(
+                        fontWeight: pw.FontWeight.bold,
+                        fontSize: 24.0,
+                        letterSpacing: 2.0,
+                      ),
+                    ),
+                  ),
+                  pw.Text(key),
+                  pw.Divider(),
+                  pw.Table(
+                    border: pw.TableBorder.all(),
+                    children: [
+                      pw.TableRow(
+                        children: [
+                          pw.Container(
+                            padding: const pw.EdgeInsets.all(4.0),
+                            child: pw.Text(
+                              'Student name',
+                              style: pw.TextStyle(
+                                fontWeight: pw.FontWeight.bold,
+                                fontSize: 16.0,
+                              ),
+                            ),
+                          ),
+                          pw.Container(
+                            padding: const pw.EdgeInsets.all(4.0),
+                            child: pw.Text(
+                              'Attendance',
+                              style: pw.TextStyle(
+                                fontWeight: pw.FontWeight.bold,
+                                fontSize: 16.0,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      for (int i = 0; i < studentIds.length; i++)
+                        pw.TableRow(
+                          children: [
+                            pw.Container(
+                              padding: const pw.EdgeInsets.all(4.0),
+                              child: pw.Text(
+                                  att[key][studentIds[i]]['studentName']),
+                            ),
+                            pw.Container(
+                              padding: const pw.EdgeInsets.all(4.0),
+                              child: pw.Text(
+                                  att[key][studentIds[i]]['isAttend'] == true
+                                      ? 'Attend'
+                                      : 'Absent'),
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
+                ],
+              );
+            }),
+      );
+    });
+
+    Directory? output = await path_provider.getDownloadsDirectory();
+    output ??= await path_provider.getTemporaryDirectory();
+    final file = File("${output.path}/${singleSubject['subjectName']}.pdf");
+    await file.writeAsBytes(await pdf.save()).then((value) {
+      showSnackbar(
+        context,
+        Snackbar(
+          content: Text(
+            'File download to ${value.path}',
+          ),
+          extended: true,
+        ),
+      );
+    });
   }
 }

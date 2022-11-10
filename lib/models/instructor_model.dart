@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import '../res/contants.dart';
+import '../res/constants.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,8 +21,6 @@ class InstructorModel {
     this.email,
     this.imageUrl,
   });
-
-
 
   Future<InstructorModel> authenticate(
       {required String email, required String password, String? username, bool isLogin = false}) async {
