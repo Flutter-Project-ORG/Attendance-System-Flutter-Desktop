@@ -1,7 +1,10 @@
+import 'package:attendance_system_flutter_desktop/res/custom_text_theme.dart';
+import 'package:attendance_system_flutter_desktop/widgets/project_name_animation.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 
 import '../view_model/auth_view_model.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 class AuthView extends StatelessWidget {
   AuthView({Key? key}) : super(key: key);
@@ -10,6 +13,14 @@ class AuthView extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final Map<String, String> userInfo = {};
+  final colorizeTextStyle =
+      const TextStyle(fontSize: 70.0, fontWeight: FontWeight.bold
+          //fontFamily: 'Horizon',
+          );
+  final colorizeColors = [
+    Colors.white,
+    Colors.black,
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -17,18 +28,20 @@ class AuthView extends StatelessWidget {
     return NavigationView(
       content: ScaffoldPage(
         content: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(40.0),
           child: Row(
             children: [
               if (width > 600)
                 Expanded(
-                  flex: 1,
-                  child: Center(
-                    child: Image.asset('assets/images/login_image.png'),
+                  flex: 2,
+                  child: ProjectNameAnimation(
+                    textStyle: CustomTextTheme.projectNameAuth,
                   ),
                 ),
               if (width > 600)
-              const SizedBox(width: 16.0,),
+                const SizedBox(
+                  width: 16.0,
+                ),
               Expanded(
                 flex: 3,
                 child: Consumer<AuthViewModel>(
@@ -114,7 +127,8 @@ class AuthView extends StatelessWidget {
                                   ),
                                   FilledButton(
                                     child: Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 4.0,horizontal: 28.0),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 4.0, horizontal: 28.0),
                                       child: Text(
                                           provider.authType == AuthType.login
                                               ? 'LOGIN'

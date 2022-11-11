@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:attendance_system_flutter_desktop/widgets/invite_button.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:encrypt/encrypt.dart' as encrypt;
@@ -28,7 +29,6 @@ class _SubjectsViewState extends State<SubjectsView> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      
       await Provider.of<SubjectsViewModel>(context, listen: false)
           .getSubjectsByInstructorId(context);
     });
@@ -169,72 +169,9 @@ class _SubjectsViewState extends State<SubjectsView> {
                                     const Spacer(),
                                     Row(
                                       children: [
-                                        Expanded(
-                                          child: FilledButton(
-                                            style: ButtonStyle(
-                                              foregroundColor:
-                                                  ButtonState.all<Color>(
-                                                      Colors.white),
-                                            ),
-                                            onPressed: () {
-                                              Map<String, dynamic> data = {
-                                                'subId': keyList[index],
-                                                'insId':
-                                                    Provider.of<AuthViewModel>(
-                                                            context,
-                                                            listen: false)
-                                                        .user!
-                                                        .instructorId!,
-                                              };
-
-                                              final key = encrypt.Key.fromUtf8(
-                                                  Constants.encryptKey);
-                                              final iv =
-                                                  encrypt.IV.fromLength(16);
-                                              final encrypter =
-                                                  encrypt.Encrypter(
-                                                      encrypt.AES(key));
-                                              final encrypted = encrypter
-                                                  .encrypt(jsonEncode(data),
-                                                      iv: iv);
-                                              showDialog(
-                                                  context: context,
-                                                  builder: (ctx) {
-                                                    return ContentDialog(
-                                                      title: Text(
-                                                          'Invite students to ${singleSubject['subjectName']}'),
-                                                      content: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          QrImage(
-                                                            backgroundColor:
-                                                                Colors.white,
-                                                            data:
-                                                                encrypted.base64,
-
-                                                            version:
-                                                                QrVersions.auto,
-                                                            size: 200.0,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      actions: [
-                                                        TextButton(
-                                                          child: const Text(
-                                                              'Cancel'),
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                        ),
-                                                      ],
-                                                    );
-                                                  });
-                                            },
-                                            child: const Text('Invite'),
-                                          ),
+                                        InviteButton(
+                                          subId: keyList[index],
+                                          subName: singleSubject['subjectName'],
                                         ),
                                         const SizedBox(
                                           width: 10,
@@ -259,13 +196,11 @@ class _SubjectsViewState extends State<SubjectsView> {
                                             child: const Text('Print'),
                                           ),
                                         ),
-
                                         const SizedBox(
                                           width: 10,
                                         ),
                                         IconButton(
                                           onPressed: () async {
-                                            
                                             await provider.deleteSubject(
                                                 context,
                                                 keyList[index],
@@ -275,7 +210,6 @@ class _SubjectsViewState extends State<SubjectsView> {
                                             FontAwesomeIcons.trash,
                                             color: Colors.red,
                                           ),
-
                                         ),
                                       ],
                                     ),
