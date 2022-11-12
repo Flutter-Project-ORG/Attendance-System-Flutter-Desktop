@@ -74,7 +74,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return FluentApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Student Attendance',
       themeMode: ThemeMode.dark,
       theme: ThemeData(
         brightness: Brightness.light,

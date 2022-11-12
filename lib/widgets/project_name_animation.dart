@@ -1,15 +1,14 @@
-import 'package:attendance_system_flutter_desktop/res/custom_text_theme.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 
 class ProjectNameAnimation extends StatelessWidget {
-  final TextStyle? textStyle;
-  ProjectNameAnimation({this.textStyle});
+
+  ProjectNameAnimation({super.key,required this.textStyle});
   final colorizeColors = [
     Colors.white,
     Colors.black,
   ];
-
+  final TextStyle textStyle;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -20,7 +19,7 @@ class ProjectNameAnimation extends StatelessWidget {
           animatedTexts: [
             ColorizeAnimatedText(
               'Student Attendance',
-              textStyle: textStyle!,
+              textStyle: textStyle,
               colors: colorizeColors,
             ),
           ],
@@ -28,9 +27,9 @@ class ProjectNameAnimation extends StatelessWidget {
           repeatForever: false,
           isRepeatingAnimation: false,
           totalRepeatCount: 1,
-          onTap: () {
-            print("Tap Event");
-          },
+          // onTap: () {
+          //   print("Tap Event");
+          // },
         ),
         const SizedBox(
           height: 10,
@@ -49,9 +48,9 @@ class ProjectNameAnimation extends StatelessWidget {
                 'No more wasting time taking attendance and absence.',
               ),
             ],
-            onTap: () {
-              print("Tap Event");
-            },
+            // onTap: () {
+            //   print("Tap Event");
+            // },
           ),
         ),
       ],

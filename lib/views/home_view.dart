@@ -42,82 +42,44 @@ class HomeView extends StatelessWidget {
               PaneItem(
                 icon: const FaIcon(FontAwesomeIcons.user),
                 title: const Text('Profile'),
-                trailing: IconButton(
-                  icon: const Icon(FluentIcons.sign_out,),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => ContentDialog(
-                        title: const Text("Logout"),
-                        content: const Text("Are you sure to logout ?"),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              homeProvider.setPageIndex = 0;
-                              homeProvider.logOut();
-                              Navigator.pushReplacementNamed(
-                                  context, AuthView.routeName);
-                              Provider.of<DashboardViewModel>(context,
-                                      listen: false)
-                                  .clearLectureInfo();
-                            },
-                            child: const Text("YES"),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text("NO"),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                trailing: Tooltip(
+                  message: 'Logout',
+                  child: IconButton(
+                    icon: const Icon(FluentIcons.sign_out,),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => ContentDialog(
+                          title: const Text("Logout"),
+                          content: const Text("Are you sure to logout ?"),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                homeProvider.setPageIndex = 0;
+                                homeProvider.logOut();
+                                Navigator.pushReplacementNamed(
+                                    context, AuthView.routeName);
+                                Provider.of<DashboardViewModel>(context,
+                                        listen: false)
+                                    .clearLectureInfo();
+                              },
+                              child: const Text("YES"),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text("NO"),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
                 body: const ProfileView(),
               ),
-              // PaneItem(
-              //   onTap: () {
-              //     showDialog(
-              //       context: context,
-              //       builder: (context) => ContentDialog(
-              //         title: const Text("Logout"),
-              //         content: const Text("Are you sure to logout ?"),
-              //         actions: [
-              //           TextButton(
-              //             onPressed: () {
-              //               Navigator.of(context).pop();
-              //               homeProvider.setPageIndex = 0;
-              //               homeProvider.logOut();
-              //               Navigator.pushReplacementNamed(
-              //                   context, AuthView.routeName);
-              //               Provider.of<DashboardViewModel>(context,
-              //                       listen: false)
-              //                   .clearLectureInfo();
-              //             },
-              //             child: const Text("YES"),
-              //           ),
-              //           TextButton(
-              //             onPressed: () {
-              //               Navigator.of(context).pop();
-              //             },
-              //             child: const Text("NO"),
-              //           ),
-              //         ],
-              //       ),
-              //     );
-              //   },
-              //   icon: FaIcon(
-              //     FontAwesomeIcons.arrowRightFromBracket,
-              //     color: Colors.red,
-              //   ),
-              //   title: Text(
-              //     'Logout',
-              //     style: TextStyle(color: Colors.red),
-              //   ),
-              //   body: Container(),
-              // ),
             ],
           ),
         );
