@@ -72,9 +72,9 @@ class _AttendanceQrViewState extends State<AttendanceQrView> {
       await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
       //await windowManager.setAsFrameless();
       await windowManager.setAlwaysOnTop(true);
-      await windowManager.setMinimumSize(const Size(300, 300));
+      await windowManager.setMinimumSize(const Size(250, 220));
       await windowManager.setPosition(const Offset(0, 0));
-      await windowManager.setSize(const Size(300, 300));
+      await windowManager.setSize(const Size(250, 220));
     });
     super.initState();
   }
@@ -114,9 +114,9 @@ class _AttendanceQrViewState extends State<AttendanceQrView> {
           child: Column(
             children: [
               const Text('Scan To Attend'),
-              const SizedBox(
-                height: 16.0,
-              ),
+              // const SizedBox(
+              //   height: 16.0,
+              // ),
               Consumer<AttendanceQrViewModel>(
                 builder: (ctx, qrProvider, _) {
                   Map<String, String> data = {
@@ -129,13 +129,13 @@ class _AttendanceQrViewState extends State<AttendanceQrView> {
                     backgroundColor: Colors.white,
                     data: encrypted.base64,
                     version: QrVersions.auto,
-                    size: 160.0,
+                    size: 125.0,
                   );
                 },
               ),
-              const SizedBox(
-                height: 16.0,
-              ),
+              // const SizedBox(
+              //   height: 16.0,
+              // ),
               FilledButton(
                 child: const Text('Exit'),
                 onPressed: () async {
