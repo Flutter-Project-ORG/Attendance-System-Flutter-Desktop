@@ -39,20 +39,20 @@ class _SubjectsViewState extends State<SubjectsView> {
   Widget build(BuildContext context) {
     return ScaffoldPage(
       content: Consumer<SubjectsViewModel>(
-        builder: (BuildContext context, SubjectsViewModel provider, _) {
-          if (provider.isLoading) {
+        builder: (BuildContext context, SubjectsViewModel subjectProvider, _) {
+          if (subjectProvider.isLoading) {
             return const Center(child: ProgressRing());
           }
-          if (provider.subjects.isEmpty) {
+          if (subjectProvider.subjects.isEmpty) {
             return const Center(
               child: Text('You don\'t have any subjects yet.'),
             );
           }
-          List<String> keyList = provider.subjects.keys.toList();
+          List<String> keyList = subjectProvider.subjects.keys.toList();
           return AnimationLimiter(
             child: GridView.builder(
               padding: const EdgeInsets.all(20),
-              itemCount: provider.subjects.length,
+              itemCount: subjectProvider.subjects.length,
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 300.0,
                 mainAxisSpacing: 16.0,
@@ -60,11 +60,11 @@ class _SubjectsViewState extends State<SubjectsView> {
               ),
               itemBuilder: (ctx, index) {
                 Map<String, dynamic> singleSubject =
-                    provider.subjects[keyList[index]];
+                    subjectProvider.subjects[keyList[index]];
                 return AnimationConfiguration.staggeredGrid(
                   position: index,
                   duration: const Duration(milliseconds: 375),
-                  columnCount: (index / provider.subjects.length).floor(),
+                  columnCount: (index / subjectProvider.subjects.length).floor(),
                   child: ScaleAnimation(
                     child: FadeInAnimation(
                       child: GestureDetector(
@@ -84,33 +84,35 @@ class _SubjectsViewState extends State<SubjectsView> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          singleSubject['subjectName'],
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
-                                          ),
-                                        ),
-                                        Container(
-                                          padding: const EdgeInsets.all(8.0),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(50),
-                                            color: Colors.grey,
-                                          ),
-                                          child: Text(
-                                            "Ends in : ${singleSubject['endDate'].toString().substring(0, 10)}",
+                                    FittedBox(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            singleSubject['subjectName'],
                                             style: const TextStyle(
-                                              fontSize: 10,
-                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20,
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                          Container(
+                                            padding: const EdgeInsets.all(8.0),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(50),
+                                              color: Colors.grey,
+                                            ),
+                                            child: Text(
+                                              "Ends in : ${singleSubject['endDate'].toString().substring(0, 10)}",
+                                              style: const TextStyle(
+                                                fontSize: 10,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                     const SizedBox(
                                       height: 10,
@@ -187,7 +189,7 @@ class _SubjectsViewState extends State<SubjectsView> {
                                                       Colors.white),
                                             ),
                                             onPressed: () async {
-                                              await provider
+                                              await subjectProvider
                                                   .printSubjectAttendance(
                                                       context,
                                                       keyList[index],
@@ -201,10 +203,26 @@ class _SubjectsViewState extends State<SubjectsView> {
                                         ),
                                         IconButton(
                                           onPressed: () async {
-                                            await provider.deleteSubject(
+                                            await subjectProvider.changeSubjectName(
+                                              context,
+                                              keyList[index],
+                                              singleSubject['subjectName'],
+                                            );
+                                          },
+                                          icon: FaIcon(
+                                            FontAwesomeIcons.penToSquare,
+                                            color: Colors.blue,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        IconButton(
+                                          onPressed: () async {
+                                            await subjectProvider.deleteSubject(
                                                 context,
                                                 keyList[index],
-                                                singleSubject['subjectName']);
+                                                singleSubject['subjectName'],);
                                           },
                                           icon: FaIcon(
                                             FontAwesomeIcons.trash,

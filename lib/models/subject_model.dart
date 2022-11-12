@@ -106,4 +106,15 @@ class SubjectModel {
         Uri.parse('${Constants.realtimeUrl}/attendance/$insId/$subId.json');
     return await http.get(url);
   }
+
+  Future<void> changeSubjectName(
+      String subId, String insId, String newName) async {
+    try {
+      Uri url = Uri.parse(
+          '${Constants.realtimeUrl}/subjects/$insId/$subId.json');
+      await http.patch(url, body: jsonEncode({'subjectName': newName}));
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

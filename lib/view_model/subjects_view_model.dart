@@ -485,4 +485,45 @@ class SubjectsViewModel with ChangeNotifier {
       );
     });
   }
+
+  Future<void> changeSubjectName(BuildContext context,String subId,String subName)async{
+    final NavigatorState navigator = Navigator.of(context);
+    showDialog(context: context, builder: (context){
+      TextEditingController controller = TextEditingController(text: subName);
+      return ContentDialog(
+        title: const Text('Edit subject name'),
+        content: TextBox(
+          controller: controller,
+          header: 'Enter subject name',
+        ),
+        actions: [
+          Button(
+            child: const Text('Cancel'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          FilledButton(
+            child: const Text('Update'),
+            onPressed: () async {
+              String insId = Provider.of<AuthViewModel>(context,listen: false).user!.instructorId!;
+              final SubjectsViewModel subProvider =
+              Provider.of<SubjectsViewModel>(context, listen: false);
+              try{
+                Provider.of<SubjectsViewModel>(context,listen: false).subjects.clear();
+                await subjectModel.changeSubjectName(subId, insId, controller.text.trim()).then((_) async{
+                  navigator.pop();
+                  await subProvider.getSubjectsByInstructorId(context);
+                });
+              }catch(_){
+                Components.showErrorSnackBar(context, text: 'Try again.');
+              }
+
+            },
+          ),
+        ],
+      );
+    });
+  }
+
 }

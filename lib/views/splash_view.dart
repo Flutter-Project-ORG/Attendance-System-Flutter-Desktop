@@ -1,3 +1,5 @@
+import 'package:attendance_system_flutter_desktop/res/custom_text_theme.dart';
+import 'package:attendance_system_flutter_desktop/widgets/project_name_animation.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 
@@ -28,11 +30,8 @@ class _SplashViewState extends State<SplashView> {
   Widget build(BuildContext context) {
     return ScaffoldPage(
       content: Center(
-        child: GlowingProgressIndicator(
-          child: Image.asset(
-            'assets/images/logo.png',
-            scale: 4,
-          ),
+        child: ProjectNameAnimation(
+          textStyle: CustomTextTheme.projectNameAuth,
         ),
       ),
     );
