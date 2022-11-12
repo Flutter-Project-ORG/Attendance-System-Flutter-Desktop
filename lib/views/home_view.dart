@@ -57,7 +57,7 @@ class HomeView extends StatelessWidget {
                               onPressed: () {
                                 Navigator.of(context).pop();
                                 homeProvider.setPageIndex = 0;
-                                homeProvider.logOut();
+                                homeProvider.logOut(context);
                                 Navigator.pushReplacementNamed(
                                     context, AuthView.routeName);
                                 Provider.of<DashboardViewModel>(context,

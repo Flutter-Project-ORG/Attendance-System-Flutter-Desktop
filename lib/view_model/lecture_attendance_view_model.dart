@@ -44,6 +44,7 @@ class LecturesAttendanceViewModel with ChangeNotifier {
       _filterSearch = (json.decode(response.body) ?? <String, dynamic>{})
           as Map<String, dynamic>;
       fetchLiveAttendance = true;
+      // print(_attendance);
     } catch (_) {
       Components.showErrorSnackBar(ctx,
           text: 'Something went wrong. try again.');
@@ -75,6 +76,7 @@ class LecturesAttendanceViewModel with ChangeNotifier {
 
   Future changeStudentAttendanceState(
       bool isAttend, Map<String, dynamic> data, BuildContext context) async {
+    _attendance[data['studentId']]['isAttend'] = isAttend;
     try {
       final insId =
           Provider.of<AuthViewModel>(context, listen: false).user!.instructorId;
@@ -88,7 +90,7 @@ class LecturesAttendanceViewModel with ChangeNotifier {
   Future<void> printLectureAttendance(
       BuildContext context, Map<String, dynamic> lectureData) async {
     final pdf = pw.Document();
-    final List studentIds = attendance.keys.toList();
+    final List studentIds = _attendance.keys.toList();
     pdf.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.a4,
@@ -136,18 +138,18 @@ class LecturesAttendanceViewModel with ChangeNotifier {
                       ),
                     ],
                   ),
-                  for (int i = 0; i < attendance.length; i++)
+                  for (int i = 0; i < _attendance.length; i++)
                     pw.TableRow(
                       children: [
                         pw.Container(
                           padding: const pw.EdgeInsets.all(4.0),
                           child:
-                              pw.Text(attendance[studentIds[i]]['studentName']),
+                              pw.Text(_attendance[studentIds[i]]['studentName']),
                         ),
                         pw.Container(
                           padding: const pw.EdgeInsets.all(4.0),
                           child: pw.Text(
-                              attendance[studentIds[i]]['isAttend'] == true
+                              _attendance[studentIds[i]]['isAttend'] == true
                                   ? 'Attend'
                                   : 'Absent'),
                         ),
