@@ -142,6 +142,9 @@ class _AttendanceQrViewState extends State<AttendanceQrView> {
                   // Provider.of<LecturesAttendanceViewModel>(context,
                   //         listen: false)
                   //     .FetchLiveAttendance = false;
+                  Provider.of<LecturesAttendanceViewModel>(context,
+                      listen: false)
+                      .setFetchLiveAttendance = false;
                   await Provider.of<AttendanceQrViewModel>(widget.ctx,
                           listen: false)
                       .deleteRandomFromDB(widget.lecId);

@@ -12,7 +12,7 @@ class LiveLectureAttendance extends StatelessWidget {
     return Expanded(
       child: Consumer<LecturesAttendanceViewModel>(
         builder: (context, att, _) => FutureBuilder(
-          future: att.fetchLiveAttendance ? Future.delayed(Duration.zero) : att.getAttendanceByLectureIdAndSubjectId(
+          future: att.getAttendanceByLectureIdAndSubjectId(
             subId!,
             lecId!,
             context,

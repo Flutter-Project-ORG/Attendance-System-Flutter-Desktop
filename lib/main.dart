@@ -75,7 +75,7 @@ class MyApp extends StatelessWidget {
     return FluentApp(
       debugShowCheckedModeBanner: false,
       title: 'Student Attendance',
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.system,
       theme: ThemeData(
         brightness: Brightness.light,
         fontFamily: 'JosefinSans',
