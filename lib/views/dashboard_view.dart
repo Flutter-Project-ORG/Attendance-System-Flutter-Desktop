@@ -1,7 +1,9 @@
+import 'package:attendance_system_flutter_desktop/res/custom_text_theme.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
 import '../widgets/live_lecture.dart';
 import '../widgets/latest_news.dart';
+import '../widgets/project_name_animation.dart';
 
 class DashboardView extends StatefulWidget {
   const DashboardView({Key? key}) : super(key: key);
@@ -32,9 +34,12 @@ class _DashboardViewState extends State<DashboardView> {
               child: Row(
                 children: [
                   const LiveLecture(),
+                  const SizedBox(width: 20,),
                   Expanded(
                     flex: 1,
-                    child: Image.asset('assets/images/login_image.png'),
+                    child: ProjectNameAnimation(
+                      textStyle: CustomTextTheme.projectNameDash,
+                    ),
                   ),
                 ],
               ),

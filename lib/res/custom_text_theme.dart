@@ -2,6 +2,16 @@ import 'package:fluent_ui/fluent_ui.dart';
 
 class CustomTextTheme{
 
+  static const TextStyle projectNameAuth = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 70.0
+  );
+
+  static const TextStyle projectNameDash = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 45.0
+  );
+  
   static const TextStyle header1 = TextStyle(
     fontWeight: FontWeight.bold,
     fontSize: 24.0,

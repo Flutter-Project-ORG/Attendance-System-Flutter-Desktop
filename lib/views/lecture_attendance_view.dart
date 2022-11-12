@@ -27,7 +27,7 @@ class LectureAttendanceView extends StatelessWidget {
             return NavigationView(
               appBar: NavigationAppBar(
                 title: Text(
-                  lectureData['lecId']!,
+                  "${lectureData['subName']} (${lectureData['lecId']!})",
                   style: CustomTextTheme.header2,
                 ),
               ),
@@ -38,7 +38,7 @@ class LectureAttendanceView extends StatelessWidget {
             return NavigationView(
               appBar: NavigationAppBar(
                 title: Text(
-                  lectureData['lecId']!,
+                  "${lectureData['subName']} (${lectureData['lecId']!})",
                   style: CustomTextTheme.header2,
                 ),
               ),
@@ -52,7 +52,7 @@ class LectureAttendanceView extends StatelessWidget {
           return NavigationView(
             appBar: NavigationAppBar(
               title: Text(
-                lectureData['lecId']!,
+                "${lectureData['subName']} (${lectureData['lecId']!})",
                 style: CustomTextTheme.header2,
               ),
               actions: Column(
@@ -113,7 +113,10 @@ class LectureAttendanceView extends StatelessWidget {
                       ),
                       Table(
                         border: TableBorder.all(
-                            borderRadius: BorderRadius.circular(8.0)),
+                          //color: Colors.white,
+                          borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(8.0)),
+                        ),
                         children: const [
                           TableRow(
                             children: [
@@ -137,7 +140,7 @@ class LectureAttendanceView extends StatelessWidget {
                                 child: Padding(
                                   padding: EdgeInsets.all(16.0),
                                   child: Text(
-                                    "Attend",
+                                    "Attendance",
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
@@ -154,7 +157,10 @@ class LectureAttendanceView extends StatelessWidget {
                           List<String> keyList = att.filterSearch.keys.toList();
                           return Table(
                             border: TableBorder.all(
-                                borderRadius: BorderRadius.circular(8.0)),
+                              borderRadius: const BorderRadius.vertical(
+                                bottom: Radius.circular(8.0),
+                              ),
+                            ),
                             children: keyList.map<TableRow>((e) {
                               Map<String, dynamic> singleAtt =
                                   att.filterSearch[e];
