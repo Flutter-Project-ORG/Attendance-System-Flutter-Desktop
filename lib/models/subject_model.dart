@@ -117,4 +117,9 @@ class SubjectModel {
       rethrow;
     }
   }
+  Future getExcuses(String insId,String subId) async {
+    Uri url = Uri.parse(
+          '${Constants.realtimeUrl}/excuses/$insId/$subId.json');
+    return await http.get(url);
+  }
 }

@@ -64,7 +64,9 @@ class LectureAttendanceView extends StatelessWidget {
                       child: const Text('Print attendance'),
                       onPressed: () async {
                         await attendanceProvider.printLectureAttendance(
-                            context, lectureData);
+                          context,
+                          lectureData,
+                        );
                       },
                     ),
                   ),
