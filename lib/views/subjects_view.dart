@@ -96,6 +96,7 @@ class _SubjectsViewState extends State<SubjectsView> {
                                               fontSize: 20,
                                             ),
                                           ),
+                                          const SizedBox(width: 10,),
                                           Container(
                                             padding: const EdgeInsets.all(8.0),
                                             decoration: BoxDecoration(
