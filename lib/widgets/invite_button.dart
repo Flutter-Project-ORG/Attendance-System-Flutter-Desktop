@@ -22,6 +22,7 @@ class InviteButton extends StatelessWidget {
         onPressed: () {
           Map<String, dynamic> data = {
             'subId': subId,
+            'subName':subName,
             'insId': Provider.of<AuthViewModel>(context, listen: false)
                 .user!
                 .instructorId!,

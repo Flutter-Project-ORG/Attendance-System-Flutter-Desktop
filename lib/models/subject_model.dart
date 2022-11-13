@@ -75,8 +75,8 @@ class SubjectModel {
       List studentsIds = students.keys.toList();
       for (var id in studentsIds) {
         if (students[id]['subjects'] != null) {
-          List ss = students[id]['subjects'] as List;
-          if (ss.contains(subjectId)) {
+          Map ss = students[id]['subjects'] as Map;
+          if (ss.containsKey(subjectId)) {
             ss.remove(subjectId);
             url = Uri.parse(
                 '${Constants.realtimeUrl}/students/$id/subjects.json');
