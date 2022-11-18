@@ -11,6 +11,7 @@ A student attendance system is needed to measure student participation in the cl
   - Live lecture
 
 ![dashboard](https://user-images.githubusercontent.com/96818454/202708865-b1434b0d-b7db-43e3-9b3b-ffdbe8aa69a1.png)
+![attend qr](https://user-images.githubusercontent.com/96818454/202710182-90c1c121-e1ea-484d-80ce-0f4160c456bc.png)
 #
 2) Subjects screen:
   - Add subject
@@ -18,6 +19,19 @@ A student attendance system is needed to measure student participation in the cl
   - Invite students
  
  ![subjects](https://user-images.githubusercontent.com/96818454/202709788-506603e8-6c83-42b2-bdcb-4c2d7c3c6e0f.png)
+ ![subject invite](https://user-images.githubusercontent.com/96818454/202710155-48d84506-70c0-4d1b-9752-41593d8425c6.png)
+ ![add subject](https://user-images.githubusercontent.com/96818454/202710227-e63effe5-7316-4006-9102-9b7e4e1c4509.png)
+#
+3) Lecture list screen:
+  - Add subject
+  - Edit, delete subjects
+  - Invite students
+ 
+![lectures](https://user-images.githubusercontent.com/96818454/202710246-b65e25b9-922d-4300-aa91-cf574271235e.png)
+#
+4) Attendance list screen:
+  - Print
+![att list](https://user-images.githubusercontent.com/96818454/202710281-fcf11613-31d7-4ca9-beb4-63a2dc640b36.png)
 
 
 
