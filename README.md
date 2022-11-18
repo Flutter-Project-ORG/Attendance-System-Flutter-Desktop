@@ -13,3 +13,12 @@ A student attendance system is needed to measure student participation in the cl
 ![dashboard](https://user-images.githubusercontent.com/96818454/202708865-b1434b0d-b7db-43e3-9b3b-ffdbe8aa69a1.png)
 
 
+2) Subjects screen:
+  - Add subject
+  - Edit, delete subjects
+  - Invite students
+ 
+ ![subjects](https://user-images.githubusercontent.com/96818454/202709788-506603e8-6c83-42b2-bdcb-4c2d7c3c6e0f.png)
+
+
+
