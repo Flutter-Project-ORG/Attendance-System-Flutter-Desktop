@@ -5,7 +5,10 @@ A student attendance system is needed to measure student participation in the cl
 
 ## RESULT
 
-1- Dashboard screen:
+1) Dashboard screen:
+  - Latest news
+  - Excuses
+  - Live lecture
 ![dashboard](https://user-images.githubusercontent.com/96818454/202708865-b1434b0d-b7db-43e3-9b3b-ffdbe8aa69a1.png)
 
 
