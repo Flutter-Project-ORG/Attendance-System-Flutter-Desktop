@@ -31,6 +31,7 @@ A student attendance system is needed to measure student participation in the cl
 #
 4) Attendance list screen:
   - Print
+  
 ![att list](https://user-images.githubusercontent.com/96818454/202710281-fcf11613-31d7-4ca9-beb4-63a2dc640b36.png)
 
 ![att list pdf](https://user-images.githubusercontent.com/96818454/202710500-37ebbe7a-f35b-49c4-9e8c-6e212e37bce8.png)
