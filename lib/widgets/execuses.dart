@@ -3,10 +3,10 @@ import 'package:provider/provider.dart';
 
 import '../view_model/dashboard_view_model.dart';
 
-class Execuses extends StatelessWidget {
+class Excuses extends StatelessWidget {
   final Map<String, dynamic>? subject;
   final String? subId;
-  const Execuses({this.subject, this.subId});
+  const Excuses({super.key, this.subject, this.subId});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class Execuses extends StatelessWidget {
         ),
       ],
       title: Text(
-        '${subject!['subjectName']} Execuses',
+        '${subject!['subjectName']} Excuses',
       ),
       content: SizedBox(
         height: 300,
@@ -38,27 +38,26 @@ class Execuses extends StatelessWidget {
               }
               if (snapshotE.data!.isEmpty) {
                 return const Center(
-                  child: Text("There's no execuses"),
+                  child: Text("There's no excuses"),
                 );
               }
               final keys = snapshotE.data!.keys.toList();
               return ListView.separated(
                 itemBuilder: (context, index) {
-                  Map<String, dynamic> singleExecuse =
+                  Map<String, dynamic> singleExcuse =
                       snapshotE.data![keys[index]];
-                  print(singleExecuse.length);
                   return Column(
                     children: [
                       Row(
                         children: [
                           CircleAvatar(
                             backgroundImage:
-                                NetworkImage(singleExecuse['image']),
+                                NetworkImage(singleExcuse['image']),
                           ),
                           const SizedBox(
                             width: 20,
                           ),
-                          Text(singleExecuse['studentName']),
+                          Text(singleExcuse['studentName']),
                         ],
                       ),
                       // ListTile(
@@ -73,12 +72,12 @@ class Execuses extends StatelessWidget {
                       ListView.separated(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: singleExecuse.length,
+                        itemCount: singleExcuse.length,
                         separatorBuilder: (context, index) => const SizedBox(
                           height: 10,
                         ),
                         itemBuilder: (context, i) {
-                          String id = singleExecuse.keys.toList()[i];
+                          String id = singleExcuse.keys.toList()[i];
                           if (id != "image" && id != "studentName") {
                             return Padding(
                               padding: const EdgeInsets.only(
@@ -88,17 +87,17 @@ class Execuses extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    singleExecuse[id]['excuseText'],
+                                    singleExcuse[id]['excuseText'],
                                   ),
                                   const SizedBox(
                                     height: 5,
                                   ),
-                                  if (singleExecuse[id]['imageUrl'] != null)
-                                    Container(
+                                  if (singleExcuse[id]['imageUrl'] != null)
+                                    SizedBox(
                                       width: double.infinity,
                                       height: 100,
                                       child: Image.network(
-                                        singleExecuse[id]['imageUrl'],
+                                        singleExcuse[id]['imageUrl'],
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -115,7 +114,10 @@ class Execuses extends StatelessWidget {
                                             color: Colors.red,
                                           ),
                                         ),
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          dashProvider.deleteExcuse(context, subId!,keys[index],id);
+                                          Navigator.pop(context);
+                                        },
                                       ),
                                       const SizedBox(width: 10,),
                                       Button(
@@ -125,7 +127,10 @@ class Execuses extends StatelessWidget {
                                             color: Colors.blue,
                                           ),
                                         ),
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          dashProvider.deleteExcuse(context, subId!,keys[index],id);
+                                          Navigator.pop(context);
+                                        },
                                       ),
                                     ],
                                   ),

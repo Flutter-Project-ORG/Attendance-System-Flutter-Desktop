@@ -51,7 +51,3 @@ A student attendance system is needed to measure student participation in the cl
 
 ![register](https://user-images.githubusercontent.com/96818454/202710617-d2ba1fad-754d-4055-88e6-526e8116f235.png)
 
-
-
-
-

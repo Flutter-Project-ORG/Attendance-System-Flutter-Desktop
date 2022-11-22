@@ -1,14 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 
-import 'auth_view_model.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 import '../models/subject_model.dart';
+import '../res/components.dart';
+import '../res/constants.dart';
+import 'auth_view_model.dart';
 
 class DashboardViewModel with ChangeNotifier {
   final bool _isLoadingLiveLecture = false;
@@ -100,4 +102,18 @@ class DashboardViewModel with ChangeNotifier {
     final res = await subjectModel.getSubjectsByInstructorId(instructorId);
     return jsonDecode(res.body) ?? <String, dynamic>{};
   }
+
+  Future<void> deleteExcuse(BuildContext context,String subId,String id,String exId)async{
+    String insId = Provider.of<AuthViewModel>(context,listen: false).user!.instructorId!;
+    try{
+      Uri url = Uri.parse(
+          '${Constants.realtimeUrl}/excuses/$insId/$subId/$id/$exId.json');
+      await http.delete(url);
+    }catch(_){
+      Components.showErrorSnackBar(context,
+          text: 'Something went wrong. try again.');
+    }
+  }
+
+
 }
