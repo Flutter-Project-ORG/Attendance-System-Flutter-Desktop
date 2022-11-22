@@ -81,7 +81,7 @@ class _DashboardViewState extends State<DashboardView> {
                                         showDialog(
                                             context: context,
                                             builder: (ctx) {
-                                              return Execuses(
+                                              return Excuses(
                                                 subject: singleSubject,
                                                 subId: keyList[index],
                                               );
