@@ -26,9 +26,6 @@ A student attendance system is needed to measure student participation in the cl
  ![add subject](https://user-images.githubusercontent.com/96818454/202710227-e63effe5-7316-4006-9102-9b7e4e1c4509.png)
 #
 3) Lecture list screen:
-  - Add subject
-  - Edit, delete subjects
-  - Invite students
  
 ![lectures](https://user-images.githubusercontent.com/96818454/202710246-b65e25b9-922d-4300-aa91-cf574271235e.png)
 #
